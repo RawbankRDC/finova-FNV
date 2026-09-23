@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>FINOVA — FNV</title>
+
+<!-- Icônes Font Awesome : aucune modification du système Firebase -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+  --bg:#f4f7fb;
+  --surface:#ffffff;
+  --surface-2:#eef3f8;
+  --ink:#101828;
+  --muted:#667085;
+  --line:#e4e9f0;
+  --primary:#175cd3;
+  --primary-2:#0b4bb3;
+  --success:#079455;
+  --danger:#d92d20;
+  --warning:#dc6803;
+  --shadow:0 12px 35px rgba(16,24,40,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.screen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:
+  radial-gradient(circle at 0 0,rgba(23,92,211,.10),transparent 34%),
+  radial-gradient(circle at 100% 100%,rgba(7,148,85,.07),transparent 32%);
+}
+.auth-card{
+  width:min(100%,430px);background:rgba(255,255,255,.98);
+  border:1px solid var(--line);border-radius:28px;padding:28px;
+  box-shadow:0 24px 70px rgba(16,24,40,.12);
+}
+.brand-mark{
+  width:58px;height:58px;border-radius:17px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:23px;margin:0 auto 16px;
+}
+.brand{text-align:center}
+.brand h1{font-size:25px;margin:0 0 8px;letter-spacing:-.5px}
+.brand p{margin:0 0 25px;color:var(--muted);font-size:13px}
+.form-group{margin:15px 0}
+label{display:block;font-size:12px;font-weight:800;margin:0 0 7px;color:#344054}
+.field{
+  position:relative
+}
+.field i{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:#98a2b3;font-size:14px;pointer-events:none
+}
+input,select,textarea{
+  width:100%;padding:14px 14px 14px 42px;border:1px solid var(--line);
+  border-radius:13px;background:#fff;outline:none;color:var(--ink);
+  transition:.2s
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);box-shadow:0 0 0 4px rgba(23,92,211,.10)
+}
+.primary{
+  width:100%;border:0;border-radius:13px;padding:14px 16px;
+  background:var(--primary);color:#fff;font-weight:800;margin-top:8px;
+  box-shadow:0 8px 20px rgba(23,92,211,.22)
+}
+.primary:hover{background:var(--primary-2)}
+.link-btn{
+  width:100%;border:0;background:transparent;color:var(--primary);
+  font-weight:750;padding:12px 6px;margin-top:8px
+}
+.welcome{
+  position:fixed;inset:0;background:rgba(16,24,40,.68);z-index:80;
+  display:flex;align-items:center;justify-content:center;padding:20px
+}
+.welcome-box{
+  width:min(100%,430px);background:#fff;border-radius:24px;padding:28px;
+  text-align:center;box-shadow:0 25px 80px rgba(0,0,0,.25)
+}
+.welcome-box .welcome-icon{
+  width:64px;height:64px;border-radius:20px;background:#ecfdf3;color:var(--success);
+  display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px
+}
+.welcome-box h2{margin:0 0 8px;font-size:23px}
+.welcome-box p{font-size:13px;line-height:1.65;color:var(--muted);text-align:left}
+
+.dashboard{display:none;min-height:100vh;padding-bottom:86px}
+.dashboard.active{display:block}
+.top{
+  position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
+  padding:13px max(18px,calc((100vw - 900px)/2));display:flex;
+  align-items:center;justify-content:space-between
+}
+.top-brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.top-brand-icon{
+  width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:14px
+}
+.top-phone{
+  font-size:11px;font-weight:800;color:var(--muted);background:var(--surface-2);
+  padding:7px 10px;border-radius:20px
+}
+.container{max-width:900px;margin:auto;padding:18px}
+.hero{
+  background:linear-gradient(135deg,#101828,#175cd3);color:#fff;border-radius:24px;
+  padding:23px;box-shadow:0 15px 35px rgba(16,24,40,.16)
+}
+.hero h1{margin:0 0 7px;font-size:23px;letter-spacing:-.4px}
+.hero p{margin:0;line-height:1.55;font-size:13px;color:rgba(255,255,255,.82)}
+.balance{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+.card,.section{
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.card{border-radius:17px;padding:16px}
+.card small{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.card strong{display:block;margin-top:6px;font-size:20px;letter-spacing:-.4px}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+.action{
+  border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px 12px;
+  color:var(--ink);font-weight:800;font-size:13px;box-shadow:var(--shadow)
+}
+.action i{display:block;font-size:20px;margin-bottom:8px;color:var(--primary)}
+.action.red i{color:var(--danger)}
+.action.yellow i{color:var(--warning)}
+.section{border-radius:20px;padding:18px;margin-top:14px}
+.section h2{
+  margin:0 0 10px;font-size:18px;display:flex;align-items:center;gap:9px
+}
+.section h2 i{color:var(--primary);font-size:15px}
+.info{
+  background:#f8fafc;border:1px solid var(--line);border-radius:13px;
+  padding:13px;font-size:12.5px;line-height:1.6;margin-top:10px
+}
+.success{color:var(--success);font-weight:800}
+.danger{color:var(--danger);font-weight:800}
+.pending{color:var(--warning);font-weight:800}
+
+.plan{
+  border:1px solid var(--line);border-radius:17px;padding:15px;margin:12px 0;
+  background:#fff;transition:.2s
+}
+.plan:hover{border-color:#b2ccff;box-shadow:0 8px 25px rgba(23,92,211,.08)}
+.plan-top-row{display:flex;gap:12px;align-items:center}
+.plan-thumb{
+  width:62px;height:62px;border-radius:14px;overflow:hidden;flex:none;
+  background:var(--surface-2);border:1px solid var(--line)
+}
+.plan-thumb img{width:100%;height:100%;object-fit:cover}
+.plan-content{min-width:0;flex:1}
+.plan-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.plan-head b{font-size:13.5px}
+.badge{
+  white-space:nowrap;background:#eff4ff;color:var(--primary);border-radius:20px;
+  padding:5px 9px;font-size:10px;font-weight:850
+}
+.plan-obj{margin:5px 0 0;color:var(--muted);font-size:11.5px}
+.plan-metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0;
+  background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:9px
+}
+.metric-item{text-align:center}
+.metric-item small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;font-weight:800}
+.metric-item strong{font-size:11.5px}
+.metric-item strong.highlight{color:var(--success)}
+.invest-btn{
+  width:100%;border:0;border-radius:12px;padding:12px;background:var(--primary);
+  color:#fff;font-weight:850;font-size:12.5px
+}
+.bottom{
+  position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(3,1fr);box-shadow:0 -8px 25px rgba(16,24,40,.07)
+}
+.bottom button{
+  border:0;background:transparent;color:var(--muted);padding:10px 5px;font-size:10.5px;font-weight:800
+}
+.bottom button i{display:block;font-size:18px;margin-bottom:4px}
+.bottom button.active{color:var(--primary)}
+.floating-socials{
+  position:fixed;right:16px;bottom:78px;z-index:35;display:flex;flex-direction:column;gap:9px
+}
+.social-float-btn{
+  width:44px;height:44px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;color:#fff;text-decoration:none;box-shadow:0 8px 20px rgba(0,0,0,.16)
+}
+.whatsapp-float{background:#12b76a}
+.telegram-float{background:#2e90fa}
+.team-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.team-table th,.team-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+.team-table th{background:#f8fafc;color:var(--muted);font-size:10px;text-transform:uppercase}
+.profile-line{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:12.5px}
+.profile-accordion{border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden;background:#fff}
+.profile-accordion-header{padding:14px;display:flex;justify-content:space-between;font-size:13px;font-weight:800;cursor:pointer}
+.profile-accordion-header .arrow{color:var(--muted)}
+.profile-accordion-content{display:none;padding:0 14px 14px;background:#f8fafc}
+.profile-accordion.active .profile-accordion-content{display:block}
+.clean-tx-list{display:flex;flex-direction:column;gap:8px}
+.clean-tx-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;display:flex;justify-content:space-between;gap:10px}
+.clean-tx-info h4{margin:0 0 3px;font-size:12.5px}
+.clean-tx-info small{font-size:10.5px;color:var(--muted)}
+.clean-tx-right{text-align:right}
+.clean-tx-amount{font-weight:900;font-size:12.5px;display:block}
+.clean-tx-amount.positive{color:var(--success)}
+.clean-tx-amount.negative{color:var(--danger)}
+.clean-tx-amount.neutral{color:var(--primary)}
+.copy-box{display:flex;gap:8px;margin-top:7px}
+.copy-box input{padding-left:14px;background:#f8fafc;font-size:11px}
+.copy-btn{border:0;background:var(--ink);color:#fff;border-radius:10px;padding:0 14px;font-weight:800}
+.logout{
+  width:100%;border:1px solid #fecdca;background:#fff5f4;color:var(--danger);
+  border-radius:13px;padding:13px;font-weight:850;margin-top:18px
+}
+.admin-link{
+  background:#101828;color:#fff;padding:7px 10px;border-radius:10px;font-weight:800;
+  font-size:10px;text-decoration:none;display:inline-flex;align-items:center;gap:5px
+}
+@media(max-width:520px){
+  .auth-card{padding:22px;border-radius:22px}
+  .container{padding:13px}
+  .hero{padding:19px;border-radius:20px}
+  .hero h1{font-size:20px}
+  .plan-head{align-items:flex-start}
+  .badge{font-size:9px}
+  .balance,.actions{gap:9px}
+}
+
+/* ===== REFONTE VISUELLE 2.0 — interface bleu/blanc ===== */
+:root{
+  --primary:#1264d8;
+  --primary-dark:#0849a6;
+  --primary-soft:#eaf3ff;
+  --line:#dbe7f5;
+  --bg:#f5f9ff;
+}
+body{background:linear-gradient(180deg,#f7fbff 0%,#eef5fc 100%);color:#10233f}
+button,a{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+button:active,.action:active,.invest-btn:active{transform:scale(.98)}
+.top{
+  background:rgba(255,255,255,.97)!important;
+  border-bottom:1px solid #dbe7f5!important;
+  box-shadow:0 5px 22px rgba(18,100,216,.07)!important;
+}
+.top-brand-icon{
+  background:linear-gradient(135deg,#1264d8,#0b4fae)!important;
+  box-shadow:0 7px 18px rgba(18,100,216,.22);
+}
+.top-brand span{font-weight:900!important;letter-spacing:.1px}
+.top-phone{
+  background:#edf5ff!important;border:1px solid #d6e7fb!important;
+  color:#1459ae!important;font-weight:800!important;
+}
+.hero{
+  background:linear-gradient(135deg,#0e61d4 0%,#0a4fae 100%)!important;
+  box-shadow:0 14px 30px rgba(10,79,174,.18)!important;
+  position:relative;overflow:hidden;
+}
+.hero:after{
+  content:"";position:absolute;width:150px;height:150px;border-radius:50%;
+  right:-55px;top:-60px;border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 0 22px rgba(255,255,255,.035),0 0 0 44px rgba(255,255,255,.025);
+}
+.hero h1,.hero p{position:relative;z-index:1}
+.balance .card{
+  border:1px solid #d9e8f8!important;
+  box-shadow:0 8px 22px rgba(16,54,96,.06)!important;
+}
+.balance .card strong{color:#0b55b7!important}
+.actions{
+  display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important;
+  margin:14px 0 18px!important;
+}
+.action{
+  min-height:52px!important;border-radius:15px!important;
+  border:1px solid #d5e5f7!important;background:#fff!important;
+  color:#12345b!important;box-shadow:0 6px 16px rgba(16,54,96,.05)!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:8px!important;font-weight:900!important;
+}
+.action i{font-size:15px;color:#1264d8}
+.action.red{border-color:#cfe0f5!important}
+.action.yellow{border-color:#cfe0f5!important}
+.section{
+  border:1px solid #dce8f5!important;
+  box-shadow:0 8px 24px rgba(16,54,96,.045)!important;
+}
+.section h2 i{color:#1264d8}
+#plansSection{padding-top:17px}
+#plansSection>h2{
+  display:flex;align-items:center;gap:8px;
+}
+.plan{
+  border:1px solid #d8e6f5!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  box-shadow:0 8px 20px rgba(20,64,110,.055)!important;
+  padding:13px!important;
+  position:relative;overflow:hidden;
+}
+.plan:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#1264d8,#53a0ff);
+}
+.plan-thumb{
+  width:58px!important;height:58px!important;border-radius:15px!important;
+  background:#eaf3ff!important;border:1px solid #d2e4fa!important;
+  overflow:hidden;display:flex!important;align-items:center;justify-content:center;
+}
+.plan-thumb img{filter:saturate(.82);transform:scale(1.08)}
+.plan-head b{color:#12345b!important;font-size:13px!important}
+.badge{
+  background:#edf5ff!important;color:#1264d8!important;border:1px solid #d3e5fa!important;
+}
+.plan-metrics{
+  background:#f7fbff!important;border:1px solid #e2edf8!important;
+  border-radius:13px!important;padding:9px 6px!important;margin-top:10px!important;
+}
+.metric-item strong{color:#153b68!important}
+.metric-item .highlight{color:#0a61ce!important}
+.invest-btn{
+  width:100%!important;margin-top:10px!important;
+  border:1px solid #0b58bd!important;border-radius:13px!important;
+  background:linear-gradient(135deg,#1264d8,#0a4fae)!important;
+  color:#fff!important;font-weight:900!important;min-height:44px!important;
+  box-shadow:0 7px 16px rgba(18,100,216,.18)!important;
+}
+.floating-socials{bottom:76px!important}
+.social-float-btn{box-shadow:0 8px 20px rgba(0,0,0,.13)!important}
+#viewProfil .hero{margin-bottom:12px}
+.profile-topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:#fff;border:1px solid #dce8f5;border-radius:18px;padding:12px;
+  box-shadow:0 8px 22px rgba(16,54,96,.05);margin-bottom:12px;
+}
+.profile-avatar{
+  width:46px;height:46px;border-radius:15px;background:#eaf3ff;
+  color:#1264d8;display:grid;place-items:center;font-size:19px;
+  border:1px solid #d2e4fa;
+}
+.profile-title{flex:1}
+.profile-title b{display:block;font-size:13px;color:#12345b}
+.profile-title span{font-size:10.5px;color:#71839b}
+.profile-exit{
+  border:1px solid #d4e3f4;background:#f7fbff;color:#1557a9;
+  border-radius:12px;padding:9px 11px;font-weight:900;font-size:11px;
+}
+.account-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;
+}
+.account-action{
+  border:1px solid #d8e7f6;background:#fff;border-radius:15px;
+  min-height:54px;padding:10px;display:flex;align-items:center;gap:10px;
+  text-align:left;box-shadow:0 7px 18px rgba(16,54,96,.045);
+}
+.account-action i{
+  width:34px;height:34px;border-radius:11px;background:#eaf3ff;color:#1264d8;
+  display:grid;place-items:center;flex:0 0 34px;
+}
+.account-action b{display:block;font-size:11.5px;color:#173b62}
+.account-action span{display:block;font-size:9.5px;color:#7a8ca2;margin-top:2px}
+.profile-accordion{
+  border:1px solid #d8e7f6!important;border-radius:15px!important;
+  box-shadow:0 6px 18px rgba(16,54,96,.035)!important;
+}
+.profile-accordion-header{padding:15px!important}
+.profile-accordion-header>span:first-child{display:flex;align-items:center;gap:8px}
+.profile-accordion-header i{color:#1264d8}
+.profile-accordion.active .profile-accordion-header{background:#f7fbff}
+.logout{
+  margin-top:12px!important;background:#fff!important;border:1px solid #cfe0f2!important;
+  color:#1a5ba9!important;min-height:46px;
+}
+.bottom{
+  background:rgba(255,255,255,.98)!important;border-top:1px solid #d9e7f5!important;
+  box-shadow:0 -8px 24px rgba(16,54,96,.07)!important;
+}
+.bottom button{color:#71839b!important;font-weight:800!important}
+.bottom button.active{color:#1264d8!important}
+.bottom button i{
+  background:transparent!important;border:0!important;
+}
+.bottom button.active i{color:#1264d8!important}
+.copy-btn{
+  background:#1264d8!important;border-radius:11px!important;
+}
+.team-table{border:1px solid #dce8f5!important}
+.team-table th{background:#f1f7fe!important;color:#5c7491!important}
+.info{border-color:#d5e5f7!important;background:#f2f8ff!important}
+@media(max-width:520px){
+  .actions{grid-template-columns:1fr 1fr!important}
+  .account-actions{grid-template-columns:1fr 1fr}
+  .account-action{min-height:58px!important}
+}
+
+</style>
+
+<style id="global-processing-style">
+.global-processing-overlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.global-processing-overlay.hidden{display:none!important}
+.global-processing-box{
+  min-width:180px;
+  padding:22px 24px;
+  border-radius:18px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 12px 40px rgba(0,0,0,.18);
+  text-align:center;
+  font-weight:700;
+}
+.global-processing-spinner{
+  width:42px;
+  height:42px;
+  margin:0 auto 12px;
+  border:4px solid rgba(0,0,0,.14);
+  border-top-color:currentColor;
+  border-radius:50%;
+  animation:globalProcessingSpin .8s linear infinite;
+}
+@keyframes globalProcessingSpin{to{transform:rotate(360deg)}}
+body.processing-active > *:not(#globalProcessingOverlay){
+  filter:blur(3px);
+  pointer-events:none!important;
+  user-select:none;
+}
+</style>
+
+
+<style id="finova-products-style">
+#plansSection .plan{overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
+#plansSection .plan:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.08)}
+#plansSection .plan-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+#plansSection .invest-btn{color:#fff;border:0}
+</style>
+
+
+<style id="finova-auth-icons">
+.auth-icon{
+  width:20px;
+  text-align:center;
+  margin-right:8px;
+}
+.auth-action-icon{
+  margin-right:7px;
+}
+</style>
+
+
+<style id="finova-premium-visual">
+:root{
+  --primary:#1769ff;--primary-dark:#0b46bd;--cyan:#16c7ff;--violet:#7b61ff;
+  --gold:#e4b82f;--gold-2:#ffd86b;--green:#13b978;--pink:#ff4fa3;
+  --ink:#162033;--muted:#7b879a;--line:#dce7f4;--bg:#eef6ff;
+}
+body{background:linear-gradient(145deg,#e9f5ff 0%,#f8fbff 45%,#eaf7f2 100%);}
+.screen.auth-screen{padding:18px 14px;background:linear-gradient(145deg,#28a9ed 0%,#42b6ed 45%,#1988d2 100%);position:relative;overflow:hidden}
+.screen.auth-screen:before,.screen.auth-screen:after{content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(1px)}
+.screen.auth-screen:before{width:270px;height:270px;right:-100px;top:-100px;background:rgba(255,255,255,.13)}
+.screen.auth-screen:after{width:230px;height:230px;left:-110px;bottom:-80px;background:rgba(0,255,205,.10)}
+.auth-shell{width:min(100%,700px);position:relative;z-index:2}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;background:rgba(255,255,255,.97);padding:8px;border-radius:38px;box-shadow:0 12px 35px rgba(0,55,120,.15);margin:0 auto 28px;max-width:700px}
+.auth-tab{border:0;background:transparent;color:#667085;border-radius:30px;min-height:62px;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.auth-tab i{font-size:17px}.auth-tab.active{color:#fff;background:linear-gradient(135deg,#1769ff,#0c55ce);box-shadow:0 8px 22px rgba(23,105,255,.30)}
+.auth-card-modern{width:min(100%,700px);padding:34px 32px 30px;border:0;border-radius:34px;background:rgba(255,255,255,.985);box-shadow:0 24px 70px rgba(4,59,110,.20);position:relative;overflow:hidden}
+.auth-card-modern:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--cyan),var(--primary),var(--violet),var(--pink),var(--gold));}
+.brand-mark-gold{width:100px;height:100px;border-radius:50%;background:linear-gradient(145deg,#f7d75c,#c89e18);color:#fff;box-shadow:0 10px 28px rgba(200,158,24,.30),inset 0 2px 5px rgba(255,255,255,.5);font-size:27px;font-weight:1000;margin:2px auto 20px;border:5px solid rgba(255,255,255,.7)}
+.brand-mark-gold span{letter-spacing:-1px}.platform-name{text-align:center;font-size:19px;font-weight:950;letter-spacing:.6px;color:#172033;margin-bottom:8px}.brand h1{font-size:25px;color:#637086;letter-spacing:-.6px;margin:0 0 8px}.brand p{font-size:13px;margin:0 0 22px;color:#8a96a8}
+.form-group{margin:13px 0}.form-group label{font-size:11px;color:#5c6b80;margin-left:5px}
+.phone-field{display:flex;align-items:center;gap:0;border:2px solid #dce7f4;border-radius:18px;background:#fff;min-height:62px;overflow:hidden;transition:.2s;box-shadow:0 5px 18px rgba(28,76,130,.05)}
+.phone-field:focus-within{border-color:#1769ff;box-shadow:0 0 0 5px rgba(23,105,255,.10)}
+.phone-field input{border:0!important;box-shadow:none!important;border-radius:0;padding:15px 16px 15px 8px;min-height:58px;font-size:17px;font-weight:700;background:transparent}
+.country-chip{height:58px;border:0;border-right:1px solid #e3ebf4;background:#f8fbff;color:#1e2b3f;padding:0 13px;display:flex;align-items:center;gap:8px;font-weight:900;white-space:nowrap}.country-chip i{font-size:10px;color:#8794a7}
+.field{border:2px solid #dce7f4;border-radius:18px;min-height:62px;background:#fff;box-shadow:0 5px 18px rgba(28,76,130,.05)}.field i{left:17px;color:#9aa8ba}.field input,.field select{min-height:58px;border:0;background:transparent;border-radius:16px;font-size:16px}.field:focus-within{border-color:#1769ff;box-shadow:0 0 0 5px rgba(23,105,255,.10)}
+.field-password input{padding-right:52px}.eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;background:#f1f6fc;color:#6f7f94;border-radius:12px;z-index:2}.eye-btn:hover{color:#1769ff;background:#e8f1ff}
+.auth-submit{min-height:58px;border-radius:30px;margin-top:13px;background:linear-gradient(135deg,#1769ff,#0b55ce 60%,#1475e8);font-size:18px;box-shadow:0 11px 25px rgba(23,105,255,.26);display:flex;align-items:center;justify-content:center;gap:9px}.auth-submit:hover{box-shadow:0 14px 30px rgba(23,105,255,.34);transform:translateY(-1px)}
+.auth-forgot{font-size:12px;color:#64748b}.link-btn{font-size:12px}
+/* Icônes et cartes : aspect brillant mais lisible */
+.action i,.section h2 i,.account-action i{filter:drop-shadow(0 3px 5px rgba(23,105,255,.15))}.card,.section,.plan,.profile-topbar,.account-action{box-shadow:0 10px 28px rgba(22,64,110,.07)}
+.hero{background:linear-gradient(135deg,#0c55ce,#1769ff 45%,#12a9e9 100%)!important}.hero h1{font-size:24px}.badge{background:linear-gradient(135deg,#eaf3ff,#f3efff)!important}
+.invest-btn{background:linear-gradient(135deg,#1769ff,#7b61ff)!important}.action{position:relative;overflow:hidden}.action:after,.invest-btn:after,.primary:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.22) 45%,transparent 65%);transform:translateX(-120%);transition:.55s}.action:hover:after,.invest-btn:hover:after,.primary:hover:after{transform:translateX(120%)}
+.bottom button{position:relative}.bottom button i{margin-bottom:5px;text-shadow:0 3px 7px rgba(23,105,255,.12)}
+@media(max-width:520px){.auth-card-modern{padding:29px 20px 25px;border-radius:28px}.auth-tabs{margin-bottom:20px}.auth-tab{min-height:56px;font-size:16px}.brand-mark-gold{width:88px;height:88px}.brand h1{font-size:21px}.platform-name{font-size:17px}.country-chip{padding:0 10px}.auth-submit{font-size:17px}}
+
+.country-picker{position:fixed;inset:0;z-index:100000;background:rgba(7,20,38,.58);backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:20px}.country-picker.hidden{display:none!important}.country-picker-card{width:min(100%,390px);background:#fff;border-radius:22px;padding:14px;box-shadow:0 25px 70px rgba(0,0,0,.25)}.country-picker-head{display:flex;align-items:center;justify-content:space-between;padding:8px 6px 12px;font-size:15px}.country-picker-head button{border:0;background:#eef4fb;width:36px;height:36px;border-radius:11px;color:#53657d}.country-option{width:100%;border:1px solid #dce7f4;background:#f8fbff;border-radius:16px;padding:13px;display:flex;align-items:center;gap:10px;text-align:left;color:#1b2b42;font-size:13px}.country-option span:last-child{flex:1;color:#65758b;font-size:11px}.country-option:hover{border-color:#1769ff;background:#edf5ff}
+</style>
+
+
+<style id="team-blue-red-theme">
+/* ===== ESPACE ÉQUIPE : palette exclusivement bleu + rouge ===== */
+#viewEquipe{
+  --team-blue:#1769ff;
+  --team-blue-dark:#0b47b8;
+  --team-blue-soft:#edf4ff;
+  --team-red:#e11d48;
+  --team-red-dark:#b3133a;
+  --team-red-soft:#fff0f3;
+  --team-ink:#18304f;
+  --team-line:#d9e5f5;
+}
+#viewEquipe .hero{
+  background:linear-gradient(135deg,var(--team-blue),var(--team-blue-dark))!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  box-shadow:0 16px 34px rgba(23,105,255,.22), inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+#viewEquipe .hero:after{border-color:rgba(255,255,255,.24)!important}
+#viewEquipe .section{
+  border:1px solid var(--team-line)!important;
+  background:#fff!important;
+  box-shadow:0 9px 24px rgba(24,48,79,.06)!important;
+  position:relative;
+  overflow:hidden;
+}
+#viewEquipe .section:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--team-blue),var(--team-red));
+}
+#viewEquipe .section h2{color:var(--team-ink)!important}
+#viewEquipe .section h2 i{color:var(--team-blue)!important}
+#viewEquipe .section:nth-of-type(2) h2 i{color:var(--team-red)!important}
+#viewEquipe .section:nth-of-type(3) h2 i{color:var(--team-blue)!important}
+#viewEquipe .section:nth-of-type(4) h2 i{color:var(--team-red)!important}
+#viewEquipe .badge{
+  background:var(--team-red-soft)!important;
+  color:var(--team-red)!important;
+  border:1px solid #f7b4c5!important;
+}
+#viewEquipe .copy-box input{
+  border:1px solid #cdddf2!important;
+  background:var(--team-blue-soft)!important;
+  color:var(--team-ink)!important;
+}
+#viewEquipe .copy-btn{
+  background:linear-gradient(135deg,var(--team-blue),var(--team-blue-dark))!important;
+  border:1px solid var(--team-blue-dark)!important;
+  box-shadow:0 7px 16px rgba(23,105,255,.18)!important;
+}
+#viewEquipe .copy-btn:active{background:var(--team-red)!important}
+#viewEquipe .team-table{
+  border:1px solid var(--team-line)!important;
+  background:#fff!important;
+}
+#viewEquipe .team-table th{
+  background:var(--team-blue-soft)!important;
+  color:var(--team-blue-dark)!important;
+  border-bottom:2px solid #c8daf4!important;
+}
+#viewEquipe .team-table td{
+  color:var(--team-ink)!important;
+}
+#viewEquipe .team-table tr:nth-child(even) td{background:#fbfdff!important}
+#viewEquipe .team-table td:last-child{
+  color:var(--team-red)!important;
+  font-weight:900!important;
+}
+#viewEquipe .success{color:var(--team-red)!important}
+#navEquipe{
+  color:var(--team-red)!important;
+}
+#navEquipe.active{
+  color:var(--team-blue)!important;
+  text-shadow:0 0 12px rgba(23,105,255,.18);
+}
+#navEquipe i{color:inherit!important}
+</style>
+
+
+<style id="button-feedback-style">
+button:not(:disabled), .account-action, .social-float-btn{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+button:not(:disabled):active, .account-action:active{transform:scale(.98);filter:brightness(.98)}
+button:disabled{cursor:not-allowed}
+</style>
+
+</head>
+
+<!-- Overlay global de traitement : flou + rotation -->
+<div id="globalProcessingOverlay" class="global-processing-overlay hidden" aria-live="polite" aria-busy="true">
+  <div class="global-processing-box">
+    <div class="global-processing-spinner"></div>
+    <div id="globalProcessingText">Traitement en cours...</div>
+  </div>
+</div>
+
+<body>
+
+<section id="loginScreen" class="screen auth-screen">
+  <div class="auth-shell">
+    <div class="auth-tabs" role="tablist">
+      <button type="button" id="authLoginTab" class="auth-tab active" onclick="showScreen('loginScreen')"><i class="fa-solid fa-right-to-bracket"></i><span>Se connecter</span></button>
+      <button type="button" id="authRegisterTab" class="auth-tab" onclick="showScreen('registerScreen')"><i class="fa-solid fa-user-plus"></i><span>Registre</span></button>
+    </div>
+    <div class="auth-card auth-card-modern">
+      <div class="brand-mark brand-mark-gold"><span>FNV</span></div>
+      <div class="brand">
+        <div class="platform-name">FINOVA — FNV</div>
+        <p>Accédez à votre espace sécurisé</p>
+      </div>
+      <div class="form-group">
+        <label>Numéro de téléphone</label>
+        <div class="phone-field">
+          <button type="button" class="country-chip" aria-label="Indicatif Congo" onclick="openCountryPicker(this)"><span>🇨🇩</span><b>+243</b><i class="fa-solid fa-chevron-down"></i></button>
+          <input id="loginPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="810000000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <div class="field field-password"><i class="fa-solid fa-lock"></i><input id="loginPass" type="password" autocomplete="current-password" placeholder="Entrez le mot de passe"><button type="button" class="eye-btn" onclick="togglePassword('loginPass',this)" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button></div>
+      </div>
+      <button type="button" class="primary auth-submit" onclick="loginWithFirebase(this)"><i class="fa-solid fa-arrow-right-to-bracket"></i><span>Se connecter</span></button>
+      <button type="button" class="link-btn auth-forgot" onclick="showScreen('forgotScreen')"><i class="fa-solid fa-key"></i> Mot de passe oublié</button>
+    </div>
+  </div>
+</section>
+
+<section id="registerScreen" class="screen auth-screen hidden">
+  <div class="auth-shell">
+    <div class="auth-tabs" role="tablist">
+      <button type="button" id="authLoginTab2" class="auth-tab" onclick="showScreen('loginScreen')"><i class="fa-solid fa-right-to-bracket"></i><span>Se connecter</span></button>
+      <button type="button" id="authRegisterTab2" class="auth-tab active" onclick="showScreen('registerScreen')"><i class="fa-solid fa-user-plus"></i><span>Registre</span></button>
+    </div>
+    <div class="auth-card auth-card-modern register-card">
+      <div class="brand-mark brand-mark-gold"><span>FNV</span></div>
+      <div class="brand">
+        <div class="platform-name">FINOVA — FNV</div>
+        <p>Créez votre espace personnel</p>
+      </div>
+      <div class="form-group">
+        <label>Numéro de téléphone</label>
+        <div class="phone-field">
+          <button type="button" class="country-chip" aria-label="Indicatif Congo" onclick="openCountryPicker(this)"><span>🇨🇩</span><b>+243</b><i class="fa-solid fa-chevron-down"></i></button>
+          <input id="regPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="810000000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <div class="field field-password"><i class="fa-solid fa-lock"></i><input id="regPass" type="password" autocomplete="new-password" placeholder="Entrez le mot de passe"><button type="button" class="eye-btn" onclick="togglePassword('regPass',this)" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button></div>
+      </div>
+      <div class="form-group">
+        <label>Confirmez le mot de passe</label>
+        <div class="field field-password"><i class="fa-solid fa-shield-halved"></i><input id="regPassConfirm" type="password" autocomplete="new-password" placeholder="Confirmez le mot de passe"><button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm',this)" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button></div>
+      </div>
+      <div class="form-group">
+        <label>Question de récupération</label>
+        <div class="field"><i class="fa-solid fa-circle-question"></i><select id="regSecretQuestion"><option>Quel est le nom de votre première école ?</option><option>Nom de votre animal préféré ?</option><option>Ville de naissance ?</option><option>Nom de votre mère ?</option></select></div>
+      </div>
+      <div class="form-group">
+        <label>Réponse</label>
+        <div class="field"><i class="fa-solid fa-comment-dots"></i><input id="regSecretAnswer" type="text" placeholder="Votre réponse"></div>
+      </div>
+      <div class="form-group">
+        <label>Code de parrainage <span style="color:var(--muted)">(facultatif)</span></label>
+        <div class="field"><i class="fa-solid fa-link"></i><input id="regRef" type="text" placeholder="Code de parrainage"></div>
+      </div>
+      <button type="button" class="primary auth-submit" onclick="registerWithFirebase(this)"><i class="fa-solid fa-user-check"></i><span>S'inscrire</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="forgotScreen" class="screen auth-screen hidden">
+  <div class="auth-shell">
+    <div class="auth-card auth-card-modern">
+      <div class="brand-mark brand-mark-gold"><span>FNV</span></div>
+      <div class="brand"><div class="platform-name">FINOVA — FNV</div><h1>Récupération du compte</h1><p>Récupérez votre accès en toute simplicité</p></div>
+      <div id="forgotStep1">
+        <div class="form-group"><label>Numéro de téléphone</label><div class="phone-field"><button type="button" class="country-chip" onclick="openCountryPicker(this)"><span>🇨🇩</span><b>+243</b><i class="fa-solid fa-chevron-down"></i></button><input id="forgotPhone" type="tel" inputmode="numeric" placeholder="810000000"></div></div>
+        <button type="button" class="primary auth-submit" onclick="findSecretQuestion()"><i class="fa-solid fa-arrow-right"></i><span>Continuer</span></button>
+      </div>
+      <div id="forgotStep2" class="hidden">
+        <div class="form-group"><label>Question enregistrée</label><div class="field"><i class="fa-solid fa-circle-question"></i><input id="forgotDisplayQuestion" type="text" readonly></div></div>
+        <div class="form-group"><label>Votre réponse</label><div class="field"><i class="fa-solid fa-comment-dots"></i><input id="forgotAnswer" type="text" placeholder="Votre réponse"></div></div>
+        <div class="form-group"><label>Nouveau mot de passe</label><div class="field field-password"><i class="fa-solid fa-lock"></i><input id="forgotNewPass" type="password" placeholder="Minimum 6 caractères"><button type="button" class="eye-btn" onclick="togglePassword('forgotNewPass',this)"><i class="fa-solid fa-eye"></i></button></div></div>
+        <button type="button" class="primary auth-submit" onclick="resetPasswordWithSecret()"><i class="fa-solid fa-key"></i><span>Enregistrer le nouveau mot de passe</span></button>
+      </div>
+      <button type="button" class="link-btn" onclick="showScreen('loginScreen')"><i class="fa-solid fa-arrow-left"></i> Retour à la connexion</button>
+    </div>
+  </div>
+</section>
+
+<div id="countryPicker" class="country-picker hidden" role="dialog" aria-label="Choisir l'indicatif">
+  <div class="country-picker-card">
+    <div class="country-picker-head"><b>Indicatif téléphonique</b><button type="button" onclick="closeCountryPicker()" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button></div>
+    <button type="button" class="country-option" onclick="selectCountry('+243','🇨🇩','RDC')"><span>🇨🇩</span><b>+243</b><span>République démocratique du Congo</span></button>
+  </div>
+</div>
+
+<div id="welcome" class="welcome hidden">
+  <div class="welcome-box">
+    <div class="welcome-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <h2>Compte créé</h2>
+    <p>Votre espace personnel est maintenant disponible. <strong>Bonus de bienvenue : 1 000 FC</strong> crédité à l’inscription.</p>
+    <button class="primary" onclick="enterDashboard()">Ouvrir mon espace</button>
+  </div>
+</div>
+
+<section id="dashboard" class="dashboard">
+<header class="top">
+  <div class="top-brand">
+    <div class="top-brand-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <span>FINOVA — FNV</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <a id="adminLinkBtn" href="admin.html" class="admin-link hidden"><i class="fa-solid fa-sliders"></i> Administration</a>
+    <div class="top-phone" id="topPhoneDisplay">--</div>
+  </div>
+</header>
+
+<div class="floating-socials">
+  <a href="https://chat.whatsapp.com/DtKa8bedSxtGMJIUUe5kjk" target="_blank" class="social-float-btn whatsapp-float" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  <a href="https://t.me/+Lj8P68tk4O5kYjI0" target="_blank" class="social-float-btn telegram-float" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+</div>
+
+<main id="viewAccueil" class="container main-view">
+  <div class="hero">
+    <h1>Votre espace personnel</h1>
+    <p>Consultez votre solde, vos opérations et les solutions disponibles depuis une interface simple et moderne.</p>
+  </div>
+
+  <div class="balance">
+    <div class="card"><small>Solde disponible</small><strong id="balance">0 FC</strong></div>
+    <div class="card"><small>Total enregistré</small><strong id="totalInvested">0 FC</strong></div>
+  </div>
+
+  <div class="actions">
+    <button class="action" onclick="scrollToPlans()"><i class="fa-solid fa-shield-halved"></i><span>Voir les programmes</span></button>
+    <button class="action" onclick="switchTab('withdraw')"><i class="fa-solid fa-money-bill-transfer"></i><span>Demander un retrait</span></button>
+  </div>
+
+
+  <div class="section" id="plansSection">
+    <h2><i class="fa-solid fa-cubes"></i> Produits FINOVA — FNV</h2>
+    <p style="color:var(--muted);font-size:12.5px;margin:0 0 12px">
+      Les anciens produits ont été retirés du catalogue. Sélectionnez un nouveau programme pour consulter ses détails.
+    </p>
+
+    <div class="plan" style="border-left:5px solid #16a34a;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%2316a34a%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%92%B0%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3ESTARTER%3C/text%3E%0A%3C/svg%3E" alt="FNV Starter"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Starter</b><span class="badge">10 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>30 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">2 500 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">75 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#16a34a;" onclick="openPlanDetail('FNV Starter',10000,2500,'30 jours','Gain indicatif : 2 500 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 30 jours : 75 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #2563eb;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%232563eb%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%92%B3%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EBASIC%3C/text%3E%0A%3C/svg%3E" alt="FNV Basic"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Basic</b><span class="badge">25 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>30 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">5 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">150 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#2563eb;" onclick="openPlanDetail('FNV Basic',25000,5000,'30 jours','Gain indicatif : 5 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 30 jours : 150 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #7c3aed;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%237c3aed%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%93%88%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3ESTANDARD%3C/text%3E%0A%3C/svg%3E" alt="FNV Standard"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Standard</b><span class="badge">50 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>30 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">10 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">300 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#7c3aed;" onclick="openPlanDetail('FNV Standard',50000,10000,'30 jours','Gain indicatif : 10 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 30 jours : 300 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #ea580c;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%23ea580c%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%9A%80%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EPLUS%3C/text%3E%0A%3C/svg%3E" alt="FNV Plus"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Plus</b><span class="badge">100 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>60 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">20 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">1 200 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#ea580c;" onclick="openPlanDetail('FNV Plus',100000,20000,'60 jours','Gain indicatif : 20 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 60 jours : 1 200 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #dc2626;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%23dc2626%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%92%8E%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EPREMIUM%3C/text%3E%0A%3C/svg%3E" alt="FNV Premium"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Premium</b><span class="badge">250 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>60 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">50 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">3 000 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#dc2626;" onclick="openPlanDetail('FNV Premium',250000,50000,'60 jours','Gain indicatif : 50 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 60 jours : 3 000 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #b7791f;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%23b7791f%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%8F%86%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EGOLD%3C/text%3E%0A%3C/svg%3E" alt="FNV Gold"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Gold</b><span class="badge">500 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>90 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">100 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">9 000 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#b7791f;" onclick="openPlanDetail('FNV Gold',500000,100000,'90 jours','Gain indicatif : 100 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 90 jours : 9 000 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #111827;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%23111827%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%E2%AD%90%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EPRO%3C/text%3E%0A%3C/svg%3E" alt="FNV Pro"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Pro</b><span class="badge">1 000 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>90 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">200 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">18 000 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#111827;" onclick="openPlanDetail('FNV Pro',1000000,200000,'90 jours','Gain indicatif : 200 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 90 jours : 18 000 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="plan" style="border-left:5px solid #0f766e;">
+      <div class="plan-top-row">
+        <div class="plan-thumb"><img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22180%22%20viewBox%3D%220%200%20300%20180%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22180%22%20rx%3D%2224%22%20fill%3D%22%230f766e%22/%3E%0A%3Ccircle%20cx%3D%22150%22%20cy%3D%2282%22%20r%3D%2248%22%20fill%3D%22rgba%28255%2C255%2C255%2C.18%29%22/%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%2298%22%20text-anchor%3D%22middle%22%20font-size%3D%2258%22%3E%F0%9F%91%91%3C/text%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22145%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%3EELITE%3C/text%3E%0A%3C/svg%3E" alt="FNV Elite"></div>
+        <div class="plan-content">
+          <div class="plan-head"><b>FNV Elite</b><span class="badge">2 500 000 FC</span></div>
+          <p class="plan-obj">Programme FINOVA — FNV</p>
+        </div>
+      </div>
+      <div class="plan-metrics">
+        <div class="metric-item"><small>Durée</small><strong>90 Jours</strong></div>
+        <div class="metric-item"><small>Indicatif/jour</small><strong class="highlight">500 000 FC</strong></div>
+        <div class="metric-item"><small>Total indicatif</small><strong class="highlight">45 000 000 FC</strong></div>
+      </div>
+      <button class="invest-btn" style="background:#0f766e;" onclick="openPlanDetail('FNV Elite',2500000,500000,'90 jours','Gain indicatif : 500 000 FC/jour','Programme FINOVA — FNV. Conditions affichées avant confirmation.','Total indicatif calculé sur 90 jours : 45 000 000 FC. Rendement non garanti.')">Investir</button>
+    </div>
+    <div class="info">
+      <i class="fa-solid fa-circle-info"></i>
+      Les montants de gain affichés sont indicatifs et ne constituent pas une garantie de rendement.
+    </div>
+  </div>
+
+</main>
+
+<main id="viewPlanDetail" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('accueil')" style="text-align:left;width:auto;padding-left:0"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+  <div class="section">
+    <h2><i class="fa-solid fa-file-lines"></i> Détails</h2>
+    <div class="info">
+      <p><b>Offre :</b> <span id="modalPlanName">--</span></p>
+      <p><b>Montant :</b> <span id="modalPlanAmount">--</span></p>
+      <p><b>Durée :</b> <span id="modalPlanDuration">--</span></p>
+      <p><b>Rendement quotidien :</b> <span id="modalPlanReturn">--</span></p>
+      <p><b>Conditions :</b> <span id="modalPlanConditions">--</span></p>
+      <p><b>Projection :</b> <span class="success" id="modalPlanRisks">--</span></p>
+    </div>
+    <button id="btnSubmitPlan" class="primary" onclick="proceedToDeposit()"><i class="fa-solid fa-wallet"></i> Déposer</button>
+  </div>
+</main>
+
+<main id="viewDeposit" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('planDetail')" style="text-align:left;width:auto;padding-left:0"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+  <div class="section">
+    <h2><i class="fa-solid fa-wallet"></i> Dépôt</h2>
+    <div class="info">
+      <p><b>Offre sélectionnée :</b> <span id="depPlanName">--</span></p>
+      <p><b>Montant :</b> <span id="depAmount" class="success">--</span></p>
+      <p><b>Bénéficiaire :</b> <strong style="color:var(--primary)">Landrine</strong></p>
+      <p><b>Numéro :</b> <strong style="color:var(--primary)">0965459468</strong></p>
+    </div>
+    <button class="copy-btn" onclick="copyDepositNumber()" style="width:100%;padding:12px;margin-top:9px"><i class="fa-regular fa-copy"></i> Copier le numéro</button>
+    <div class="info"><i class="fa-solid fa-circle-info"></i> Effectuez le versement du montant exact, puis indiquez les informations de transaction ci-dessous.</div>
+
+    <div class="form-group">
+      <label>Numéro de l'expéditeur</label>
+      <div class="field"><i class="fa-solid fa-phone"></i><input type="tel" id="depSenderPhone" placeholder="09XXXXXXXX"></div>
+    </div>
+    <div class="form-group">
+      <label>Référence / ID de transaction</label>
+      <div class="field"><i class="fa-solid fa-receipt"></i><input type="text" id="depTxRef" placeholder="Ex. TX987654321"></div>
+    </div>
+    <button id="btnConfirmDeposit" class="primary" onclick="confirmDeposit(this)"><i class="fa-solid fa-paper-plane"></i> Soumettre le dépôt</button>
+  </div>
+</main>
+
+<main id="viewWithdraw" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('accueil')" style="text-align:left;width:auto;padding-left:0"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+  <div class="section">
+    <h2><i class="fa-solid fa-money-bill-transfer"></i> Retrait</h2>
+    <div class="info">
+      <b>Conditions</b><br>
+      Montant minimum : <b>3 500 FC</b><br>
+      Frais de service : <b>7%</b><br>
+      Disponibilité : <b>24h/24 et 7j/7</b>
+    </div>
+    <div class="form-group">
+      <label>Opérateur</label>
+      <div class="field"><i class="fa-solid fa-sim-card"></i><select id="withdrawOperator"><option>Airtel Money</option></select></div>
+    </div>
+    <div class="form-group">
+      <label>Numéro de réception</label>
+      <div class="field"><i class="fa-solid fa-phone"></i><input type="tel" id="withdrawPhone" placeholder="09XXXXXXXX"></div>
+    </div>
+    <div class="form-group">
+      <label>Montant à retirer</label>
+      <div class="field"><i class="fa-solid fa-coins"></i><input id="withdrawAmount" type="number" min="3500" placeholder="Minimum 3500 FC"></div>
+    </div>
+    <button id="btnDemoWithdraw" class="primary" onclick="demoWithdraw(this)"><i class="fa-solid fa-paper-plane"></i> Envoyer la demande</button>
+  </div>
+</main>
+
+<main id="viewEquipe" class="container main-view hidden">
+  <div class="hero">
+    <h1>Votre équipe</h1>
+    <p>Retrouvez les membres de votre équipe et les commissions enregistrées sur votre compte.</p>
+  </div>
+
+  <div class="section">
+    <h2><i class="fa-solid fa-share-nodes"></i> Invitation</h2>
+    <label>Code personnel</label>
+    <div class="copy-box"><input id="refCodeDisplay" type="text" readonly><button class="copy-btn" onclick="copyRef()">Copier</button></div>
+    <label style="margin-top:12px">Lien d'invitation</label>
+    <div class="copy-box"><input id="refLinkDisplay" type="text" readonly><button class="copy-btn" onclick="copyLink()">Copier</button></div>
+  </div>
+
+  <div class="section">
+    <h2><i class="fa-solid fa-users"></i> Niveau 1 <span class="badge">33%</span></h2>
+    <p style="color:var(--muted);font-size:11.5px">Membres : <b id="countN1">0</b> · Commissions : <span class="success" id="commN1">0 FC</span></p>
+    <table class="team-table"><thead><tr><th>Téléphone</th><th>Date</th><th>Commission</th></tr></thead><tbody id="teamBodyN1"><tr><td colspan="3" style="text-align:center;color:var(--muted)">Aucun membre.</td></tr></tbody></table>
+  </div>
+
+  <div class="section">
+    <h2><i class="fa-solid fa-user-group"></i> Niveau 2 <span class="badge">5%</span></h2>
+    <p style="color:var(--muted);font-size:11.5px">Membres : <b id="countN2">0</b> · Commissions : <span class="success" id="commN2">0 FC</span></p>
+    <table class="team-table"><thead><tr><th>Téléphone</th><th>Date</th><th>Commission</th></tr></thead><tbody id="teamBodyN2"><tr><td colspan="3" style="text-align:center;color:var(--muted)">Aucun membre.</td></tr></tbody></table>
+  </div>
+
+  <div class="section">
+    <h2><i class="fa-solid fa-diagram-project"></i> Niveau 3 <span class="badge">1%</span></h2>
+    <p style="color:var(--muted);font-size:11.5px">Membres : <b id="countN3">0</b> · Commissions : <span class="success" id="commN3">0 FC</span></p>
+    <table class="team-table"><thead><tr><th>Téléphone</th><th>Date</th><th>Commission</th></tr></thead><tbody id="teamBodyN3"><tr><td colspan="3" style="text-align:center;color:var(--muted)">Aucun membre.</td></tr></tbody></table>
+  </div>
+</main>
+
+<main id="viewProfil" class="container main-view hidden">
+  <div class="hero">
+    <h1>Mon espace</h1>
+    <p>Vos informations, opérations et raccourcis sont regroupés ici.</p>
+  </div>
+
+  <div class="profile-topbar">
+    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+    <div class="profile-title">
+      <b>Mon compte</b>
+      <span id="profileStatusMini">Espace personnel sécurisé</span>
+    </div>
+    <button class="profile-exit" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+  </div>
+
+  <div class="account-actions">
+    <button class="account-action" onclick="switchTab('accueil')">
+      <i class="fa-solid fa-house"></i><span><b>Accueil</b><span>Tableau de bord</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('equipe')">
+      <i class="fa-solid fa-users"></i><span><b>Mon équipe</b><span>Réseau de parrainage</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('withdraw')">
+      <i class="fa-solid fa-wallet"></i><span><b>Retrait</b><span>Faire une demande</span></span>
+    </button>
+    <button class="account-action" onclick="scrollToPlans();switchTab('accueil')">
+      <i class="fa-solid fa-cubes"></i><span><b>Programmes</b><span>Voir les offres</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('profileDeposits')">
+      <i class="fa-solid fa-arrow-down-to-line"></i><span><b>Dépôts</b><span>Historique des dépôts</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('profileWithdrawals')">
+      <i class="fa-solid fa-arrow-up-from-line"></i><span><b>Retraits</b><span>Historique des retraits</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('profileActivities')">
+      <i class="fa-solid fa-chart-line"></i><span><b>Activités</b><span>Historique des activités</span></span>
+    </button>
+    <button class="account-action" onclick="switchTab('serviceClient')">
+      <i class="fa-solid fa-headset"></i><span><b>Service client</b><span>Besoin d'aide ?</span></span>
+    </button>
+  </div>
+
+  <div class="section">
+    <h2><i class="fa-solid fa-id-card"></i> Informations du compte</h2>
+    <div class="profile-line"><b>Téléphone</b><span id="profilePhone">--</span></div>
+    <div class="profile-line"><b>Statut</b><span class="success">Compte actif</span></div>
+    <div class="profile-line"><b>Code parrain</b><span id="profileRefCode">--</span></div>
+    <div class="profile-line"><b>Parrain</b><span id="profileReferredBy">Aucun</span></div>
+  </div>
+
+  <button class="logout" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Quitter mon espace</button>
+</main>
+
+<main id="viewProfileDeposits" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('profil')" style="text-align:left;width:auto;padding-left:0">
+    <i class="fa-solid fa-arrow-left"></i> Retour à mon espace
+  </button>
+  <div class="section">
+    <h2><i class="fa-solid fa-arrow-down-to-line"></i> Dépôts & bonus</h2>
+    <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Historique de vos dépôts, bonus, commissions et opérations créditées.</p>
+    <div id="profileRecharges" class="clean-tx-list">Aucun dépôt ou bonus enregistré.</div>
+  </div>
+</main>
+
+<main id="viewProfileWithdrawals" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('profil')" style="text-align:left;width:auto;padding-left:0">
+    <i class="fa-solid fa-arrow-left"></i> Retour à mon espace
+  </button>
+  <div class="section">
+    <h2><i class="fa-solid fa-arrow-up-from-line"></i> Retraits</h2>
+    <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Historique de toutes vos demandes de retrait.</p>
+    <div id="profileWithdrawals" class="clean-tx-list">Aucun retrait enregistré.</div>
+  </div>
+</main>
+
+<main id="viewProfileActivities" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('profil')" style="text-align:left;width:auto;padding-left:0">
+    <i class="fa-solid fa-arrow-left"></i> Retour à mon espace
+  </button>
+  <div class="section">
+    <h2><i class="fa-solid fa-chart-line"></i> Activités</h2>
+    <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Suivez vos programmes actifs et leurs prochains cycles.</p>
+    <div id="profileInvestments" class="clean-tx-list">Aucune activité.</div>
+  </div>
+</main>
+
+<main id="viewServiceClient" class="container main-view hidden">
+  <button class="link-btn" onclick="switchTab('profil')" style="text-align:left;width:auto;padding-left:0">
+    <i class="fa-solid fa-arrow-left"></i> Retour à mon espace
+  </button>
+  <div class="section">
+    <h2><i class="fa-solid fa-headset"></i> Service client</h2>
+    <p style="color:var(--muted);font-size:12px;margin:0 0 14px">Notre service client est disponible pour vous accompagner et répondre à vos questions.</p>
+
+    <a href="https://chat.whatsapp.com/DtKa8bedSxtGMJIUUe5kjk" target="_blank" class="account-action" style="width:100%;text-decoration:none;margin-bottom:10px">
+      <i class="fa-brands fa-whatsapp" style="color:#12b76a"></i><span><b>Service client WhatsApp</b><span>Contacter l'assistance sur WhatsApp</span></span>
+    </a>
+
+    <a href="https://t.me/+Lj8P68tk4O5kYjI0" target="_blank" class="account-action" style="width:100%;text-decoration:none">
+      <i class="fa-brands fa-telegram" style="color:#2e90fa"></i><span><b>Service client Telegram</b><span>Contacter l'assistance sur Telegram</span></span>
+    </a>
+  </div>
+</main>
+
+<nav class="bottom">
+  <button id="navAccueil" class="active" onclick="switchTab('accueil')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+  <button id="navEquipe" onclick="switchTab('equipe')"><i class="fa-solid fa-users"></i><span>Équipe</span></button>
+  <button id="navProfil" onclick="switchTab('profil')"><i class="fa-solid fa-circle-user"></i><span>Espace</span></button>
+</nav>
+</section>
+
+
+<script id="global-processing-functions">
+(function(){
+  window.showGlobalProcessing = function(message){
+    const overlay = document.getElementById('globalProcessingOverlay');
+    const text = document.getElementById('globalProcessingText');
+    if(text) text.textContent = message || 'Traitement en cours...';
+    if(overlay) overlay.classList.remove('hidden');
+    document.body.classList.add('processing-active');
+  };
+  window.hideGlobalProcessing = function(){
+    const overlay = document.getElementById('globalProcessingOverlay');
+    if(overlay) overlay.classList.add('hidden');
+    document.body.classList.remove('processing-active');
+  };
+  window.runWithGlobalProcessing = async function(message, action){
+    showGlobalProcessing(message);
+    try {
+      return await action();
+    } finally {
+      hideGlobalProcessing();
+    }
+  };
+})();
+</script>
+
+<!-- BONUS INSCRIPTION : chaque nouveau compte reçoit 1 000 FC, crédités une seule fois lors de la création du compte. -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_SAk06Yxk3RxybMw_wmIbbnf1uVkjEDE",
+    authDomain: "invest-rdc-dc876.firebaseapp.com",
+    projectId: "invest-rdc-dc876",
+    storageBucket: "invest-rdc-dc876.firebasestorage.app",
+    messagingSenderId: "772626561525",
+    appId: "1:772626561525:web:b89a210b244005c58cc8bc"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let selectedPlanData = { name: '', amount: 0, dailyGain: 0 };
+  let currentForgotPhone = '';
+
+  window.showScreen = function(screenId){
+   ['loginScreen','registerScreen','forgotScreen'].forEach(id => {
+     const el = document.getElementById(id);
+     if(el) el.classList.add('hidden');
+   });
+   const target = document.getElementById(screenId);
+   if(target) target.classList.remove('hidden');
+
+   const loginTabs = document.querySelectorAll('#authLoginTab,#authLoginTab2');
+   const registerTabs = document.querySelectorAll('#authRegisterTab,#authRegisterTab2');
+   loginTabs.forEach(b => b.classList.toggle('active', screenId === 'loginScreen'));
+   registerTabs.forEach(b => b.classList.toggle('active', screenId === 'registerScreen'));
+   if(screenId === 'loginScreen') window.hideGlobalProcessing?.();
+  }
+
+  let activeCountryButton = null;
+  window.openCountryPicker = function(button){
+    activeCountryButton = button;
+    const picker = document.getElementById('countryPicker');
+    if(picker) picker.classList.remove('hidden');
+  };
+  window.closeCountryPicker = function(){
+    const picker = document.getElementById('countryPicker');
+    if(picker) picker.classList.add('hidden');
+    activeCountryButton = null;
+  };
+  window.selectCountry = function(code, flag, name){
+    if(activeCountryButton){
+      activeCountryButton.innerHTML = '<span>'+flag+'</span><b>'+code+'</b><i class="fa-solid fa-chevron-down"></i>';
+      activeCountryButton.setAttribute('aria-label','Indicatif '+name);
+    }
+    closeCountryPicker();
+  };
+
+  window.togglePassword = function(inputId, btn){
+   const input = document.getElementById(inputId);
+   if(!input) return;
+   const show = input.type === 'password';
+   input.type = show ? 'text' : 'password';
+   const icon = btn && btn.querySelector('i');
+   if(icon){ icon.classList.toggle('fa-eye', !show); icon.classList.toggle('fa-eye-slash', show); }
+  }
+
+  window.toggleProfileAccordion = function(headerElement) {
+   const parent = headerElement.parentElement;
+   parent.classList.toggle('active');
+  }
+
+
+  const FINOVA_PRODUCT_CATALOG_VERSION = 2;
+  const FINOVA_CURRENT_PRODUCTS = [
+    'FNV Starter','FNV Basic','FNV Standard','FNV Plus',
+    'FNV Premium','FNV Gold','FNV Pro','FNV Elite'
+  ];
+
+  function isCurrentFinovaProduct(name){
+    return FINOVA_CURRENT_PRODUCTS.includes(String(name || ''));
+  }
+
+  function migrateFinovaCatalog(u){
+    if(!u) return u;
+
+    // Les comptes existants restent valides. Seul le catalogue de produits
+    // est réinitialisé afin de repartir avec les nouveaux plans FINOVA — FNV.
+    if(u.productCatalogVersion !== FINOVA_PRODUCT_CATALOG_VERSION){
+      u.productCatalogVersion = FINOVA_PRODUCT_CATALOG_VERSION;
+      u.purchasedPlans = [];
+      // Ne pas supprimer l'historique financier : les anciennes transactions
+      // restent visibles, mais les anciens produits ne sont plus proposés.
+      u.activeInvestments = Array.isArray(u.activeInvestments)
+        ? u.activeInvestments.filter(inv => isCurrentFinovaProduct(inv.name))
+        : [];
+    }
+    return u;
+  }
+
+  function normalizeUserData(u){
+   if(!u || typeof u !== 'object') u = {};
+   u.phone = String(u.phone || '');
+   u.name = String(u.name || '');
+   u.balance = Number.isFinite(Number(u.balance)) ? Number(u.balance) : 0;
+   u.invested = Number.isFinite(Number(u.invested)) ? Number(u.invested) : 0;
+   u.transactions = Array.isArray(u.transactions) ? u.transactions : [];
+   u.purchasedPlans = Array.isArray(u.purchasedPlans) ? u.purchasedPlans : [];
+   u.activeInvestments = Array.isArray(u.activeInvestments) ? u.activeInvestments : [];
+   u.teamN1 = Array.isArray(u.teamN1) ? u.teamN1 : [];
+   u.teamN2 = Array.isArray(u.teamN2) ? u.teamN2 : [];
+   u.teamN3 = Array.isArray(u.teamN3) ? u.teamN3 : [];
+   u.referredBy = String(u.referredBy || '');
+   u.myRefCode = String(u.myRefCode || '');
+   u.isAdmin = u.isAdmin === true;
+   u.isActive = u.isActive !== false;
+   return u;
+  }
+
+  window.getUserData = function(){
+   let u = JSON.parse(localStorage.getItem('investRdcUser') || 'null');
+   if(!u){
+    u = { 
+      phone: '', 
+      name: '',
+      balance: 0, 
+      invested: 0, 
+      transactions: [], 
+      purchasedPlans: [], 
+      activeInvestments: [], 
+      teamN1: [], 
+      teamN2: [], 
+      teamN3: [],
+      referredBy: '',
+      isAdmin: false,
+      isActive: true,
+      myRefCode: ''
+    };
+   }
+   u = normalizeUserData(u);
+   u = migrateFinovaCatalog(u);
+   return u;
+  }
+
+  window.saveUserData = async function(u){
+   localStorage.setItem('investRdcUser', JSON.stringify(u));
+   if(u.phone){
+    try {
+      await setDoc(doc(db, "users", u.phone), u, { merge: true });
+    } catch(e) {
+      console.error("Erreur de sauvegarde Firestore :", e);
+    }
+   }
+  }
+
+  async function distributeCommissions(buyerUser, amount, planName) {
+    buyerUser = normalizeUserData(buyerUser);
+    if(!buyerUser.referredBy) return;
+
+    try {
+      const q = query(collection(db, "users"), where("myRefCode", "==", buyerUser.referredBy));
+      const querySnapshot = await getDocs(q);
+      
+      if(!querySnapshot.empty) {
+        let p1Doc = querySnapshot.docs[0];
+        let p1Data = p1Doc.data();
+        let comm1 = Math.round(amount * 0.33);
+        p1Data.balance += comm1;
+        
+        let member1 = p1Data.teamN1.find(m => m.phone === buyerUser.phone);
+        if(member1) {
+          member1.comm = (member1.comm || 0) + comm1;
+        } else {
+          p1Data.teamN1.push({ phone: buyerUser.phone, comm: comm1, date: new Date().toLocaleDateString() });
+        }
+
+        p1Data.transactions.unshift({
+          type: `Commission N1 (33% - ${planName})`,
+          amount: comm1,
+          date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+          status: 'Approuvé'
+        });
+
+        await updateDoc(p1Doc.ref, {
+          balance: p1Data.balance,
+          teamN1: p1Data.teamN1,
+          transactions: p1Data.transactions
+        });
+
+        if(p1Data.referredBy) {
+          const q2 = query(collection(db, "users"), where("myRefCode", "==", p1Data.referredBy));
+          const qs2 = await getDocs(q2);
+          if(!qs2.empty) {
+            let p2Doc = qs2.docs[0];
+            let p2Data = p2Doc.data();
+            let comm2 = Math.round(amount * 0.05);
+            p2Data.balance += comm2;
+
+            let member2 = p2Data.teamN2.find(m => m.phone === buyerUser.phone);
+            if(member2) {
+              member2.comm = (member2.comm || 0) + comm2;
+            } else {
+              p2Data.teamN2.push({ phone: buyerUser.phone, comm: comm2, date: new Date().toLocaleDateString() });
+            }
+
+            p2Data.transactions.unshift({
+              type: `Commission N2 (5% - ${planName})`,
+              amount: comm2,
+              date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+              status: 'Approuvé'
+            });
+
+            await updateDoc(p2Doc.ref, {
+              balance: p2Data.balance,
+              teamN2: p2Data.teamN2,
+              transactions: p2Data.transactions
+            });
+
+            if(p2Data.referredBy) {
+              const q3 = query(collection(db, "users"), where("myRefCode", "==", p2Data.referredBy));
+              const qs3 = await getDocs(q3);
+              if(!qs3.empty) {
+                let p3Doc = qs3.docs[0];
+                let p3Data = p3Doc.data();
+                let comm3 = Math.round(amount * 0.01);
+                p3Data.balance += comm3;
+
+                let member3 = p3Data.teamN3.find(m => m.phone === buyerUser.phone);
+                if(member3) {
+                  member3.comm = (member3.comm || 0) + comm3;
+                } else {
+                  p3Data.teamN3.push({ phone: buyerUser.phone, comm: comm3, date: new Date().toLocaleDateString() });
+                }
+
+                p3Data.transactions.unshift({
+                  type: `Commission N3 (1% - ${planName})`,
+                  amount: comm3,
+                  date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                  status: 'Approuvé'
+                });
+
+                await updateDoc(p3Doc.ref, {
+                  balance: p3Data.balance,
+                  teamN3: p3Data.teamN3,
+                  transactions: p3Data.transactions
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch(e) {
+      console.error("Erreur distribution commissions :", e);
+    }
+  }
+
+  async function syncApprovedDeposits(){
+    let u = getUserData();
+    let updated = false;
+
+    u.transactions.forEach(tx => {
+      if(tx.type && tx.type.startsWith('Dépôt') && (tx.status === 'Approuvé' || tx.status === 'Succès') && !tx.activated){
+        tx.activated = true;
+        updated = true;
+        u.invested += tx.amount;
+
+        let planName = tx.planName || tx.type.replace('Dépôt (', '').replace(')', '');
+        if(!isCurrentFinovaProduct(planName)){
+          return;
+        }
+        let dailyGain = tx.dailyGain || Math.round(tx.amount * 0.34);
+
+        u.activeInvestments.push({
+          name: planName,
+          amount: tx.amount,
+          dailyGain: dailyGain,
+          startTime: Date.now(),
+          lastCheck: Date.now()
+        });
+
+        distributeCommissions(u, tx.amount, planName);
+      }
+    });
+
+    if(updated){
+      await saveUserData(u);
+    }
+  }
+
+  // Gestion de l'état de chargement des boutons Connexion / Inscription
+  function setAuthButtonLoading(btn, loading, loadingText = 'Chargement...') {
+    if(!btn) return;
+    if(loading) {
+      if(!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+      btn.style.opacity = '0.75';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> &nbsp;' + loadingText;
+    } else {
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+      btn.style.opacity = '';
+      if(btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+    }
+  }
+
+  window.registerWithFirebase = async function(btn) {
+    showGlobalProcessing('Création du compte...');
+    const phone = document.getElementById('regPhone').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const passConfirm = document.getElementById('regPassConfirm').value;
+    const secretQuestion = document.getElementById('regSecretQuestion').value;
+    const secretAnswer = document.getElementById('regSecretAnswer').value.trim();
+    const refCode = document.getElementById('regRef').value.trim();
+
+    if(!phone || phone.length < 9) { hideGlobalProcessing(); alert('Veuillez entrer un numéro de téléphone valide.'); return; }
+    if(!pass || pass.length < 6) { hideGlobalProcessing(); alert('Le mot de passe doit comporter au moins 6 caractères.'); return; }
+    if(pass !== passConfirm) { hideGlobalProcessing(); alert('Les mots de passe ne correspondent pas.'); return; }
+    if(!secretAnswer) { hideGlobalProcessing(); alert('Veuillez renseigner votre réponse secrète.'); return; }
+
+    if(refCode && refCode === phone) {
+      hideGlobalProcessing();
+      alert("Erreur de sécurité : Vous ne pouvez pas vous parrainer vous-même.");
+      return;
+    }
+
+    setAuthButtonLoading(btn, true, 'Création du compte...');
+
+    try {
+      const userDocRef = doc(db, "users", phone);
+      const userSnap = await getDoc(userDocRef);
+      if(userSnap.exists()) {
+        setAuthButtonLoading(btn, false);
+        alert('Ce numéro de téléphone est déjà enregistré. Veuillez vous connecter.');
+        return;
+      }
+
+      let referrerRef = null;
+      if(refCode) {
+        const qRef = query(collection(db, "users"), where("myRefCode", "==", refCode));
+        const refSnap = await getDocs(qRef);
+        if(refSnap.empty) {
+          setAuthButtonLoading(btn, false);
+          hideGlobalProcessing();
+          alert('Erreur : Le code de parrainage entré est invalide ou inexistant.');
+          return;
+        }
+        referrerRef = refSnap.docs[0];
+        if(referrerRef.id === phone) {
+          btn.disabled = false;
+          hideGlobalProcessing();
+          alert('Erreur de sécurité : Auto-parrainage interdit.');
+          return;
+        }
+      }
+
+      const fakeEmail = phone + "@investrdc.cd";
+      await createUserWithEmailAndPassword(auth, fakeEmail, pass);
+      
+      const generatedRefCode = 'RDC-' + Math.floor(1000 + Math.random() * 9000);
+
+      let u = { 
+        phone: phone, 
+        name: 'Membre ' + phone,
+        password: pass,
+        secretQuestion: secretQuestion,
+        secretAnswer: secretAnswer,
+        balance: 1000, 
+        invested: 0, 
+        transactions: [{
+          type: 'Bonus de bienvenue',
+          amount: 1000,
+          date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+          status: 'Approuvé'
+        }], 
+        purchasedPlans: [], 
+        activeInvestments: [],
+        productCatalogVersion: FINOVA_PRODUCT_CATALOG_VERSION, 
+        teamN1: [], 
+        teamN2: [], 
+        teamN3: [],
+        referredBy: refCode || '',
+        myRefCode: generatedRefCode,
+        isAdmin: false,
+        isActive: true
+      };
+
+      await setDoc(userDocRef, u);
+
+      if(referrerRef) {
+        let parentData = referrerRef.data();
+        if(!parentData.teamN1.some(m => m.phone === phone)) {
+          parentData.teamN1.push({ phone: phone, comm: 0, date: new Date().toLocaleDateString() });
+          await updateDoc(referrerRef.ref, { teamN1: parentData.teamN1 });
+        }
+
+        if(parentData.referredBy) {
+          const qRef2 = query(collection(db, "users"), where("myRefCode", "==", parentData.referredBy));
+          const refSnap2 = await getDocs(qRef2);
+          if(!refSnap2.empty) {
+            let gpDoc = refSnap2.docs[0];
+            let gpData = gpDoc.data();
+            if(!gpData.teamN2.some(m => m.phone === phone)) {
+              gpData.teamN2.push({ phone: phone, comm: 0, date: new Date().toLocaleDateString() });
+              await updateDoc(gpDoc.ref, { teamN2: gpData.teamN2 });
+            }
+
+            if(gpData.referredBy) {
+              const qRef3 = query(collection(db, "users"), where("myRefCode", "==", gpData.referredBy));
+              const refSnap3 = await getDocs(qRef3);
+              if(!refSnap3.empty) {
+                let ggpDoc = refSnap3.docs[0];
+                let ggpData = ggpDoc.data();
+                if(!ggpData.teamN3.some(m => m.phone === phone)) {
+                  ggpData.teamN3.push({ phone: phone, comm: 0, date: new Date().toLocaleDateString() });
+                  await updateDoc(ggpDoc.ref, { teamN3: ggpData.teamN3 });
+                }
+              }
+            }
+          }
+        }
+      }
+
+      localStorage.setItem('investRdcUser', JSON.stringify(u));
+
+      // Après la création réussie, l'utilisateur arrive directement sur l'accueil.
+      document.getElementById('welcome').classList.add('hidden');
+      await enterDashboard();
+      hideGlobalProcessing();
+      setAuthButtonLoading(btn, false);
+    } catch (error) {
+      hideGlobalProcessing();
+      setAuthButtonLoading(btn, false);
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Ce numéro de téléphone est déjà enregistré. Veuillez vous connecter.');
+      } else {
+        alert("Erreur lors de l'inscription : " + error.message);
+      }
+    }
+  };
+
+  window.loginWithFirebase = async function(btn) {
+    showGlobalProcessing('Connexion en cours...');
+    const phone = document.getElementById('loginPhone').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    if(!phone || !pass) { hideGlobalProcessing(); alert('Veuillez remplir tous les champs.'); return; }
+
+    setAuthButtonLoading(btn, true, 'Connexion...');
+
+    const fakeEmail = phone + "@investrdc.cd";
+
+    try {
+      await signInWithEmailAndPassword(auth, fakeEmail, pass);
+      
+      const userDocRef = doc(db, "users", phone);
+      const userSnap = await getDoc(userDocRef);
+
+      if(userSnap.exists()){
+        let u = migrateFinovaCatalog(userSnap.data());
+        if(u.isActive === false){
+          setAuthButtonLoading(btn, false);
+          alert("Votre compte a été bloqué par l'administration.");
+          return;
+        }
+        await setDoc(userDocRef, u, { merge: true });
+        localStorage.setItem('investRdcUser', JSON.stringify(u));
+      } else {
+        let u = { 
+          phone: phone, 
+          name: 'Membre ' + phone,
+          password: pass,
+          secretQuestion: '',
+          secretAnswer: '',
+          balance: 500, 
+          invested: 0, 
+          transactions: [{
+            type: 'Bonus de bienvenue',
+            amount: 500,
+            date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            status: 'Approuvé'
+          }], 
+          purchasedPlans: [], 
+          activeInvestments: [], 
+          teamN1: [], 
+          teamN2: [], 
+          teamN3: [],
+          referredBy: '',
+          myRefCode: 'RDC-' + Math.floor(1000 + Math.random() * 9000),
+          isAdmin: false,
+          isActive: true
+        };
+        await setDoc(userDocRef, u);
+        localStorage.setItem('investRdcUser', JSON.stringify(u));
+      }
+
+      document.getElementById('welcome').classList.add('hidden');
+      await enterDashboard();
+      hideGlobalProcessing();
+      setAuthButtonLoading(btn, false);
+    } catch (error) {
+      hideGlobalProcessing();
+      setAuthButtonLoading(btn, false);
+      alert('Identifiants incorrects ou compte introuvable.');
+    }
+  };
+
+  window.findSecretQuestion = async function(){
+    const phone = document.getElementById('forgotPhone').value.trim();
+    if(!phone) { alert('Veuillez entrer votre numéro de téléphone.'); return; }
+
+    try {
+      const userDocRef = doc(db, "users", phone);
+      const userSnap = await getDoc(userDocRef);
+
+      if(!userSnap.exists()) {
+        alert('Aucun compte enregistré avec ce numéro de téléphone.');
+        return;
+      }
+
+      let target = userSnap.data();
+      currentForgotPhone = phone;
+      document.getElementById('forgotDisplayQuestion').value = target.secretQuestion || 'Quel est le nom de votre première école ?';
+      document.getElementById('forgotStep1').classList.add('hidden');
+      document.getElementById('forgotStep2').classList.remove('hidden');
+    } catch(e) {
+      alert("Erreur lors de la recherche du compte.");
+    }
+  };
+
+  window.resetPasswordWithSecret = async function(){
+    const answer = document.getElementById('forgotAnswer').value.trim();
+    const newPass = document.getElementById('forgotNewPass').value;
+
+    if(!answer || !newPass || newPass.length < 6){
+      alert('Veuillez remplir tous les champs (nouveau mot de passe de 6 caractères min.).');
+      return;
+    }
+
+    try {
+      const userDocRef = doc(db, "users", currentForgotPhone);
+      const userSnap = await getDoc(userDocRef);
+
+      if(userSnap.exists()) {
+        let uData = userSnap.data();
+        if(uData.secretAnswer.toLowerCase() !== answer.toLowerCase()) {
+          alert('La réponse secrète est incorrecte.');
+          return;
+        }
+        const oldPass = uData.password;
+        if(!oldPass){
+          alert('Ce compte doit être réinitialisé par l’administrateur : aucun mot de passe de récupération n’est disponible.');
+          return;
+        }
+        const credentialEmail = currentForgotPhone + '@investrdc.cd';
+        const cred = await signInWithEmailAndPassword(auth, credentialEmail, oldPass);
+        await updatePassword(cred.user, newPass);
+        await updateDoc(userDocRef, { password: newPass });
+        await signOut(auth);
+        
+        alert('Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.');
+        document.getElementById('forgotStep1').classList.remove('hidden');
+        document.getElementById('forgotStep2').classList.add('hidden');
+        document.getElementById('forgotPhone').value = '';
+        document.getElementById('forgotAnswer').value = '';
+        document.getElementById('forgotNewPass').value = '';
+        showScreen('loginScreen');
+      } else {
+        alert('Erreur lors de la réinitialisation.');
+      }
+    } catch(e) {
+      alert("Erreur technique lors de la réinitialisation.");
+    }
+  };
+
+  window.enterDashboard = async function(){
+   let u = getUserData();
+   if(!u.phone) return;
+
+   try {
+     const docSnap = await getDoc(doc(db, "users", u.phone));
+     if(docSnap.exists()){
+       u = docSnap.data();
+       localStorage.setItem('investRdcUser', JSON.stringify(u));
+     }
+   } catch(e){}
+
+   if(u.isActive === false){
+     alert("Votre compte a été bloqué par l'administration.");
+     logout();
+     return;
+   }
+   document.getElementById('welcome').classList.add('hidden');
+   document.getElementById('loginScreen').classList.add('hidden');
+   document.getElementById('registerScreen').classList.add('hidden');
+   document.getElementById('forgotScreen').classList.add('hidden');
+   document.getElementById('dashboard').classList.add('active');
+   switchTab('accueil');
+   await syncApprovedDeposits();
+   checkDailyEarnings();
+   updateDashboardUI();
+  }
+
+  window.switchTab = function(tabName){
+   document.querySelectorAll('.main-view').forEach(v => v.classList.add('hidden'));
+
+   if(tabName === 'accueil'){
+    document.getElementById('viewAccueil').classList.remove('hidden');
+   } else if(tabName === 'equipe'){
+    document.getElementById('viewEquipe').classList.remove('hidden');
+   } else if(tabName === 'profil'){
+    document.getElementById('viewProfil').classList.remove('hidden');
+   } else if(tabName === 'planDetail'){
+    document.getElementById('viewPlanDetail').classList.remove('hidden');
+   } else if(tabName === 'deposit'){
+    document.getElementById('viewDeposit').classList.remove('hidden');
+   } else if(tabName === 'withdraw'){
+    document.getElementById('viewWithdraw').classList.remove('hidden');
+   } else if(tabName === 'profileDeposits'){
+    document.getElementById('viewProfileDeposits').classList.remove('hidden');
+   } else if(tabName === 'profileWithdrawals'){
+    document.getElementById('viewProfileWithdrawals').classList.remove('hidden');
+   } else if(tabName === 'profileActivities'){
+    document.getElementById('viewProfileActivities').classList.remove('hidden');
+   } else if(tabName === 'serviceClient'){
+    document.getElementById('viewServiceClient').classList.remove('hidden');
+   }
+
+   document.querySelectorAll('.bottom button').forEach(b => b.classList.remove('active'));
+   if(tabName === 'accueil') document.getElementById('navAccueil').classList.add('active');
+   if(tabName === 'equipe') document.getElementById('navEquipe').classList.add('active');
+   if(tabName === 'profil') document.getElementById('navProfil').classList.add('active');
+
+   window.scrollTo({top:0, behavior:'smooth'});
+   if(['accueil', 'equipe', 'profil'].includes(tabName)){
+    syncApprovedDeposits().then(() => {
+      checkDailyEarnings();
+      updateDashboardUI();
+    });
+   }
+  }
+
+  window.updateDashboardUI = function(){
+   const u = getUserData();
+   if(u.isActive === false){
+     alert("Votre compte a été bloqué par l'administration.");
+     logout();
+     return;
+   }
+
+   document.getElementById('balance').textContent = u.balance.toLocaleString() + ' FC';
+   document.getElementById('totalInvested').textContent = u.invested.toLocaleString() + ' FC';
+   document.getElementById('topPhoneDisplay').textContent = u.phone || '--';
+   document.getElementById('profilePhone').textContent = u.phone || '--';
+   document.getElementById('profileRefCode').textContent = u.myRefCode || '--';
+   document.getElementById('profileReferredBy').textContent = u.referredBy ? u.referredBy : 'Aucun (Parrain direct non défini)';
+   document.getElementById('refCodeDisplay').value = u.myRefCode || '';
+   
+   const currentBaseURL = window.location.origin + window.location.pathname;
+   document.getElementById('refLinkDisplay').value = currentBaseURL + '?id=' + (u.myRefCode || '');
+   
+   const adminBtn = document.getElementById('adminLinkBtn');
+   if(adminBtn){
+     if(u.isAdmin === true){
+       adminBtn.classList.remove('hidden');
+     } else {
+       adminBtn.classList.add('hidden');
+     }
+   }
+
+   let sumN1 = u.teamN1.reduce((acc, cur) => acc + (cur.comm || 0), 0);
+   let sumN2 = u.teamN2.reduce((acc, cur) => acc + (cur.comm || 0), 0);
+   let sumN3 = u.teamN3.reduce((acc, cur) => acc + (cur.comm || 0), 0);
+
+   document.getElementById('countN1').textContent = u.teamN1.length;
+   document.getElementById('commN1').textContent = sumN1.toLocaleString() + ' FC';
+   document.getElementById('countN2').textContent = u.teamN2.length;
+   document.getElementById('commN2').textContent = sumN2.toLocaleString() + ' FC';
+   document.getElementById('countN3').textContent = u.teamN3.length;
+   document.getElementById('commN3').textContent = sumN3.toLocaleString() + ' FC';
+
+   let htmlN1 = '';
+   u.teamN1.forEach(m => {
+     let commVal = m.comm || 0;
+     htmlN1 += `<tr><td><b>${m.phone}</b></td><td>${m.date || '-'}</td><td style="text-align:right;" class="success">+${commVal.toLocaleString()} FC</td></tr>`;
+   });
+   document.getElementById('teamBodyN1').innerHTML = htmlN1 || `<tr><td colspan="3" style="text-align:center; color:var(--muted);">Aucun membre dans ce niveau.</td></tr>`;
+
+   let htmlN2 = '';
+   u.teamN2.forEach(m => {
+     let commVal = m.comm || 0;
+     htmlN2 += `<tr><td><b>${m.phone}</b></td><td>${m.date || '-'}</td><td style="text-align:right;" class="success">+${commVal.toLocaleString()} FC</td></tr>`;
+   });
+   document.getElementById('teamBodyN2').innerHTML = htmlN2 || `<tr><td colspan="3" style="text-align:center; color:var(--muted);">Aucun membre dans ce niveau.</td></tr>`;
+
+   let htmlN3 = '';
+   u.teamN3.forEach(m => {
+     let commVal = m.comm || 0;
+     htmlN3 += `<tr><td><b>${m.phone}</b></td><td>${m.date || '-'}</td><td style="text-align:right;" class="success">+${commVal.toLocaleString()} FC</td></tr>`;
+   });
+   document.getElementById('teamBodyN3').innerHTML = htmlN3 || `<tr><td colspan="3" style="text-align:center; color:var(--muted);">Aucun membre dans ce niveau.</td></tr>`;
+
+   let rechargesHtml = '';
+   let withdrawalsHtml = '';
+   let investmentsHtml = '';
+
+   u.transactions.forEach(tx => {
+    let statusBadge = '';
+    if(tx.status === 'En cours' || tx.status === 'en cours' || tx.status === 'En attente') {
+     statusBadge = '<span class="pending">En cours</span>';
+    } else if(tx.status === 'Approuvé' || tx.status === 'Succès' || tx.status === 'Réussi') {
+     statusBadge = '<span class="success">Réussi avec succès</span>';
+    } else if(tx.status === 'Refusé' || tx.status === 'Rejeté' || tx.status === 'Rejete') {
+     statusBadge = '<span class="danger">Rejeté</span>';
+    }
+
+    let refInfo = tx.ref ? `<br><small style="color:var(--muted)">Réf: ${tx.ref} ${tx.senderPhone ? '• Exp: ' + tx.senderPhone : ''}</small>` : '';
+
+    if(tx.type.includes('Dépôt') || tx.type.includes('Recharge') || tx.type.includes('Bonus') || tx.type.includes('Commission') || tx.type.includes('Admin')){
+     rechargesHtml += `<div class="clean-tx-card"><div class="clean-tx-info"><h4>${tx.type}</h4><small>${tx.date}</small>${refInfo}</div><div class="clean-tx-right"><span class="clean-tx-amount positive">+${tx.amount.toLocaleString()} FC</span>${statusBadge}</div></div>`;
+    } else if(tx.type.includes('Retrait')){
+     withdrawalsHtml += `<div class="clean-tx-card"><div class="clean-tx-info"><h4>${tx.type}</h4><small>${tx.date}</small>${refInfo}</div><div class="clean-tx-right"><span class="clean-tx-amount negative">-${tx.amount.toLocaleString()} FC</span>${statusBadge}</div></div>`;
+    }
+   });
+
+   u.activeInvestments.forEach((inv, index) => {
+    let nextPayout = inv.lastCheck + (24 * 60 * 60 * 1000);
+    let diff = Math.max(0, nextPayout - Date.now());
+    let h = Math.floor(diff / (1000 * 60 * 60));
+    let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    let s = Math.floor((diff % (1000 * 60)) / 1000);
+    let timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+    investmentsHtml += `<div class="clean-tx-card"><div class="clean-tx-info"><h4>${inv.name}</h4><small>Investissement : ${inv.amount.toLocaleString()} FC • Gain : ${inv.dailyGain.toLocaleString()} FC/j</small></div><div class="clean-tx-right"><span class="clean-tx-amount neutral" id="inv-timer-${index}">${timeStr}</span><small style="color:var(--muted); font-size:10px;">Prochain cycle</small></div></div>`;
+   });
+
+   document.getElementById('profileRecharges').innerHTML = rechargesHtml || 'Aucun dépôt ou bonus enregistré.';
+   document.getElementById('profileWithdrawals').innerHTML = withdrawalsHtml || 'Aucun retrait enregistré.';
+   document.getElementById('profileInvestments').innerHTML = investmentsHtml || 'Aucun actif actif pour le moment.';
+  }
+
+  window.openPlanDetail = function(name, amount, dailyGain, duration, returnRate, conditions, risks){
+   const u = getUserData();
+selectedPlanData = { name, amount, dailyGain };
+   document.getElementById('modalPlanName').textContent = name;
+   document.getElementById('modalPlanAmount').textContent = amount.toLocaleString() + ' FC';
+   document.getElementById('modalPlanDuration').textContent = duration;
+   document.getElementById('modalPlanReturn').textContent = returnRate;
+   document.getElementById('modalPlanConditions').textContent = conditions;
+   document.getElementById('modalPlanRisks').textContent = risks;
+   
+   switchTab('planDetail');
+  }
+
+  window.proceedToDeposit = function(){
+   document.getElementById('depPlanName').textContent = selectedPlanData.name;
+   document.getElementById('depAmount').textContent = selectedPlanData.amount.toLocaleString() + ' FC';
+   switchTab('deposit');
+  }
+
+  window.copyTextSafe = async function(text){
+   if(navigator.clipboard && window.isSecureContext){
+     return navigator.clipboard.writeText(text);
+   }
+   const area = document.createElement('textarea');
+   area.value = text; area.style.position='fixed'; area.style.opacity='0';
+   document.body.appendChild(area); area.focus(); area.select();
+   const ok = document.execCommand('copy');
+   area.remove();
+   if(!ok) throw new Error('copy failed');
+  }
+
+  window.copyDepositNumber = function(){
+   copyTextSafe('0965459468').then(() => alert('Numéro de recharge copié avec succès !')).catch(() => alert('Copiez le numéro : 0965459468'));
+  }
+
+  window.confirmDeposit = async function(btn){
+   const senderPhone = document.getElementById('depSenderPhone').value.trim();
+   const txRef = document.getElementById('depTxRef').value.trim();
+
+   if(!senderPhone || !txRef){
+     alert('Veuillez renseigner votre numéro de téléphone (expéditeur) et la référence/ID de transaction.');
+     return;
+   }
+
+   showGlobalProcessing('Soumission du dépôt...');
+   btn.disabled = true;
+
+   try {
+     let u = getUserData();
+u.transactions.unshift({
+      type: 'Dépôt (' + selectedPlanData.name + ')',
+      amount: selectedPlanData.amount,
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      status: 'En cours',
+      ref: txRef,
+      senderPhone: senderPhone,
+      planName: selectedPlanData.name,
+      dailyGain: selectedPlanData.dailyGain,
+      activated: false
+     });
+
+     await saveUserData(u);
+     updateDashboardUI();
+
+     document.getElementById('depSenderPhone').value = '';
+     document.getElementById('depTxRef').value = '';
+     switchTab('accueil');
+
+     hideGlobalProcessing();
+     alert("Demande de dépôt soumise avec succès ! Le statut est actuellement \"En cours\" en attendant la validation de l'administrateur.");
+   } catch(error) {
+     console.error('Erreur lors de la soumission du dépôt :', error);
+     hideGlobalProcessing();
+     alert('Impossible de soumettre le dépôt. Veuillez réessayer.');
+   } finally {
+     btn.disabled = false;
+     hideGlobalProcessing();
+   }
+  }
+
+  window.demoWithdraw = async function(btn){
+   const amount = Number(document.getElementById('withdrawAmount').value);
+   const phoneReceiver = document.getElementById('withdrawPhone').value.trim();
+
+   if(!amount || amount < 3500){
+    alert('Le montant minimum pour effectuer un retrait est de 3 500 FC.');
+    return;
+   }
+   if(!phoneReceiver){
+    alert('Veuillez entrer votre numéro Airtel de réception.');
+    return;
+   }
+
+   let u = getUserData();
+   if(u.balance < amount){
+    alert('Solde insuffisant pour honorer ce retrait.');
+    return;
+   }
+
+   showGlobalProcessing('Soumission du retrait...');
+   btn.disabled = true;
+
+   try {
+     let fee = amount * 0.07;
+     let netAmount = amount - fee;
+
+     u.balance -= amount;
+
+     u.transactions.unshift({
+      type: 'Retrait (' + document.getElementById('withdrawOperator').value + ' - Net : ' + Math.round(netAmount).toLocaleString() + ' FC)',
+      amount: amount,
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      status: 'En cours',
+      ref: phoneReceiver
+     });
+
+     await saveUserData(u);
+     updateDashboardUI();
+
+     document.getElementById('withdrawAmount').value = '';
+     document.getElementById('withdrawPhone').value = '';
+     switchTab('accueil');
+
+     hideGlobalProcessing();
+     alert('Demande de retrait enregistrée avec succès ! En attente de validation admin.');
+   } catch(error) {
+     console.error('Erreur lors de la soumission du retrait :', error);
+     hideGlobalProcessing();
+     alert('Impossible de soumettre le retrait. Veuillez réessayer.');
+   } finally {
+     btn.disabled = false;
+     hideGlobalProcessing();
+   }
+  }
+
+  window.scrollToPlans = function(){
+   document.getElementById('plansSection').scrollIntoView({behavior:'smooth'});
+  }
+
+  window.copyRef = function(){
+   copyTextSafe(document.getElementById('refCodeDisplay').value).then(() => alert('Code de parrainage copié dans le presse-papier !')).catch(() => alert('Code : ' + document.getElementById('refCodeDisplay').value));
+  }
+
+  window.copyLink = function(){
+   copyTextSafe(document.getElementById('refLinkDisplay').value).then(() => alert("Lien d'invitation copié dans le presse-papier !")).catch(() => alert("Lien : " + document.getElementById('refLinkDisplay').value));
+  }
+
+  window.logout = async function(){
+   try {
+     await signOut(auth);
+   } catch (e) {
+     console.error(e);
+   }
+   localStorage.removeItem('investRdcUser');
+   document.getElementById('dashboard').classList.remove('active');
+   showScreen('loginScreen');
+  }
+
+  function checkDailyEarnings(){
+   let u = getUserData();
+   if(!u.phone) return;
+   let now = Date.now();
+   let updated = false;
+   
+   u.activeInvestments.forEach(inv => {
+    if(!inv.lastCheck) inv.lastCheck = inv.startTime;
+    let elapsedMs = now - inv.lastCheck;
+    let oneDayMs = 24 * 60 * 60 * 1000;
+    
+    if(elapsedMs >= oneDayMs){
+     let cycles = Math.floor(elapsedMs / oneDayMs);
+     let addedGain = cycles * inv.dailyGain;
+     u.balance += addedGain;
+     inv.lastCheck += (cycles * oneDayMs);
+     updated = true;
+     
+     u.transactions.unshift({
+      type: 'Gain quotidien (' + inv.name + ')',
+      amount: addedGain,
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      status: 'Approuvé'
+     });
+    }
+   });
+
+   if(updated) saveUserData(u);
+  }
+
+  setInterval(() => {
+   checkDailyEarnings();
+   let u = getUserData();
+   if(u.activeInvestments){
+    u.activeInvestments.forEach((inv, index) => {
+     let el = document.getElementById(`inv-timer-${index}`);
+     if(el){
+      let nextPayout = inv.lastCheck + (24 * 60 * 60 * 1000);
+      let diff = Math.max(0, nextPayout - Date.now());
+      let h = Math.floor(diff / (1000 * 60 * 60));
+      let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      let s = Math.floor((diff % (1000 * 60)) / 1000);
+      el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+     }
+    });
+   }
+  }, 1000);
+
+  window.onload = function() {
+   const urlParams = new URLSearchParams(window.location.search);
+   const refId = urlParams.get('id') || urlParams.get('ref');
+   if(refId){
+    const regRefInput = document.getElementById('regRef');
+    if(regRefInput){
+     regRefInput.value = refId;
+     showScreen('registerScreen');
+    }
+   }
+   syncApprovedDeposits().then(() => {
+     checkDailyEarnings();
+   });
+  };
+</script>
+
+<script id="global-submit-delegation">
+(function(){
+  // Les boutons importants gèrent désormais eux-mêmes leur état de traitement.
+  // Cette délégation reste volontairement neutre pour éviter de bloquer l'interface.
+})();
+</script>
+
+</body>
+</html>
