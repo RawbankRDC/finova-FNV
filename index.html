@@ -444,6 +444,17 @@ body.processing-active > *:not(#globalProcessingOverlay){
 </style>
 
 
+<style id="welcome-bonus-product-style">
+.welcome-bonus-product{border:2px solid #16a34a;border-radius:20px;padding:16px;background:linear-gradient(135deg,#f0fdf4,#fff);box-shadow:0 10px 25px rgba(22,163,74,.10);margin-bottom:14px;position:relative;overflow:hidden}
+.welcome-bonus-product:after{content:"🎁";position:absolute;right:12px;top:8px;font-size:42px;opacity:.12}
+.welcome-bonus-head{display:flex;align-items:center;gap:12px}
+.welcome-bonus-icon{width:58px;height:58px;border-radius:16px;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-size:25px;flex:none}
+.welcome-bonus-product h3{margin:0;font-size:16px;color:#166534}
+.welcome-bonus-product p{margin:5px 0 0;font-size:11.5px;color:#64748b;line-height:1.5}
+.claim-bonus-btn{width:100%;margin-top:13px;border:0;border-radius:13px;padding:13px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-weight:900;box-shadow:0 7px 17px rgba(22,163,74,.20)}
+.welcome-bonus-claimed{border:1px solid #dbe7f5;border-radius:16px;padding:13px;background:#f8fafc;color:#64748b;font-size:12px}
+</style>
+
 <style id="finova-products-style">
 #plansSection .plan{overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
 #plansSection .plan:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.08)}
@@ -657,14 +668,6 @@ button:disabled{cursor:not-allowed}
         <div class="field field-password"><i class="fa-solid fa-shield-halved"></i><input id="regPassConfirm" type="password" autocomplete="new-password" placeholder="Confirmez le mot de passe"><button type="button" class="eye-btn" onclick="togglePassword('regPassConfirm',this)" aria-label="Afficher le mot de passe"><i class="fa-solid fa-eye"></i></button></div>
       </div>
       <div class="form-group">
-        <label>Question de récupération</label>
-        <div class="field"><i class="fa-solid fa-circle-question"></i><select id="regSecretQuestion"><option>Quel est le nom de votre première école ?</option><option>Nom de votre animal préféré ?</option><option>Ville de naissance ?</option><option>Nom de votre mère ?</option></select></div>
-      </div>
-      <div class="form-group">
-        <label>Réponse</label>
-        <div class="field"><i class="fa-solid fa-comment-dots"></i><input id="regSecretAnswer" type="text" placeholder="Votre réponse"></div>
-      </div>
-      <div class="form-group">
         <label>Code de parrainage <span style="color:var(--muted)">(facultatif)</span></label>
         <div class="field"><i class="fa-solid fa-link"></i><input id="regRef" type="text" placeholder="Code de parrainage"></div>
       </div>
@@ -693,6 +696,56 @@ button:disabled{cursor:not-allowed}
   </div>
 </section>
 
+<!-- SÉCURISATION DU COMPTE : configurée depuis le profil -->
+<style id="account-security-style">
+#securityModal{position:fixed;inset:0;z-index:100001;background:rgba(7,20,38,.62);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px}
+#securityModal.hidden{display:none!important}
+.security-card{width:min(100%,470px);background:#fff;border-radius:24px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.28);position:relative}
+.security-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.security-icon{width:48px;height:48px;border-radius:15px;background:#eaf3ff;color:#1769ff;display:grid;place-items:center;font-size:21px}
+.security-head h2{margin:0;font-size:19px;color:#172033}
+.security-head p{margin:3px 0 0;color:#7b879a;font-size:11px}
+.security-close{margin-left:auto;width:38px;height:38px;border:0;border-radius:11px;background:#f1f5f9;color:#64748b}
+.security-card .form-group{margin:13px 0}
+.security-info{background:#f2f8ff;border:1px solid #d5e5f7;border-radius:13px;padding:12px;font-size:11.5px;line-height:1.55;color:#52657d}
+.security-save{width:100%;min-height:50px;border:0;border-radius:14px;background:linear-gradient(135deg,#1769ff,#0b55ce);color:#fff;font-weight:900;margin-top:8px}
+</style>
+<div id="securityModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="securityTitle">
+  <div class="security-card">
+    <div class="security-head">
+      <div class="security-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h2 id="securityTitle">Sécuriser mon compte</h2>
+        <p>Configurez la récupération de votre mot de passe</p>
+      </div>
+      <button type="button" class="security-close" onclick="closeSecurityModal()" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="security-info">
+      Cette question et cette réponse seront utilisées lorsque vous choisissez « Mot de passe oublié ».
+      Gardez votre réponse secrète et mémorisez-la.
+    </div>
+    <div class="form-group">
+      <label>Question de récupération</label>
+      <div class="field"><i class="fa-solid fa-circle-question"></i>
+        <select id="securityQuestion">
+          <option value="">Choisissez une question</option>
+          <option>Quel est le nom de votre première école ?</option>
+          <option>Nom de votre animal préféré ?</option>
+          <option>Ville de naissance ?</option>
+          <option>Nom de votre mère ?</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Réponse secrète</label>
+      <div class="field"><i class="fa-solid fa-comment-dots"></i>
+        <input id="securityAnswer" type="text" autocomplete="off" placeholder="Entrez votre réponse secrète">
+      </div>
+    </div>
+    <button type="button" class="security-save" onclick="saveAccountSecurity()"><i class="fa-solid fa-shield-check"></i> Enregistrer la sécurité</button>
+  </div>
+</div>
+
 <div id="countryPicker" class="country-picker hidden" role="dialog" aria-label="Choisir l'indicatif">
   <div class="country-picker-card">
     <div class="country-picker-head"><b>Indicatif téléphonique</b><button type="button" onclick="closeCountryPicker()" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button></div>
@@ -704,7 +757,7 @@ button:disabled{cursor:not-allowed}
   <div class="welcome-box">
     <div class="welcome-icon"><i class="fa-solid fa-circle-check"></i></div>
     <h2>Compte créé</h2>
-    <p>Votre espace personnel est maintenant disponible. <strong>Bonus de bienvenue : 1 000 FC</strong> crédité à l’inscription.</p>
+    <p>Votre espace personnel est maintenant disponible. <strong>Bonus de bienvenue : 1 000 FC</strong> disponible à réclamer dans Activités.</p>
     <button class="primary" onclick="enterDashboard()">Ouvrir mon espace</button>
   </div>
 </div>
@@ -1017,6 +1070,9 @@ button:disabled{cursor:not-allowed}
     <button class="account-action" onclick="switchTab('serviceClient')">
       <i class="fa-solid fa-headset"></i><span><b>Service client</b><span>Besoin d'aide ?</span></span>
     </button>
+    <button class="account-action" onclick="openSecurityModal()">
+      <i class="fa-solid fa-shield-halved"></i><span><b>Sécuriser mon compte</b><span>Configurer la récupération</span></span>
+    </button>
   </div>
 
   <div class="section">
@@ -1059,6 +1115,7 @@ button:disabled{cursor:not-allowed}
   <div class="section">
     <h2><i class="fa-solid fa-chart-line"></i> Activités</h2>
     <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Suivez vos programmes actifs et leurs prochains cycles.</p>
+    <div id="welcomeBonusActivity"></div>
     <div id="profileInvestments" class="clean-tx-list">Aucune activité.</div>
   </div>
 </main>
@@ -1089,6 +1146,55 @@ button:disabled{cursor:not-allowed}
 </section>
 
 
+<script id="account-security-functions">
+(function(){
+  window.openSecurityModal = function(){
+    const u = window.getUserData ? window.getUserData() : JSON.parse(localStorage.getItem('investRdcUser') || 'null');
+    const q = document.getElementById('securityQuestion');
+    const a = document.getElementById('securityAnswer');
+    if(q) q.value = u && u.secretQuestion ? u.secretQuestion : '';
+    if(a) a.value = '';
+    const modal = document.getElementById('securityModal');
+    if(modal) modal.classList.remove('hidden');
+  };
+
+  window.closeSecurityModal = function(){
+    const modal = document.getElementById('securityModal');
+    if(modal) modal.classList.add('hidden');
+  };
+
+  window.saveAccountSecurity = async function(){
+    const q = document.getElementById('securityQuestion')?.value || '';
+    const a = document.getElementById('securityAnswer')?.value.trim() || '';
+    if(!q){ alert('Veuillez choisir une question de récupération.'); return; }
+    if(!a){ alert('Veuillez renseigner votre réponse secrète.'); return; }
+
+    const u = window.getUserData ? window.getUserData() : null;
+    if(!u || !u.phone){ alert('Votre session utilisateur est introuvable.'); return; }
+
+    showGlobalProcessing('Sécurisation du compte...');
+    try{
+      u.secretQuestion = q;
+      u.secretAnswer = a;
+      if(window.saveUserData) await window.saveUserData(u);
+      localStorage.setItem('investRdcUser', JSON.stringify(u));
+      closeSecurityModal();
+      alert('Votre compte est maintenant sécurisé. Cette question pourra être utilisée pour récupérer votre mot de passe oublié.');
+    }catch(e){
+      console.error(e);
+      alert('Impossible d’enregistrer la sécurité du compte. Veuillez réessayer.');
+    }finally{
+      hideGlobalProcessing();
+    }
+  };
+
+  window.addEventListener('click', function(e){
+    const modal = document.getElementById('securityModal');
+    if(e.target === modal) closeSecurityModal();
+  });
+})();
+</script>
+
 <script id="global-processing-functions">
 (function(){
   window.showGlobalProcessing = function(message){
@@ -1114,7 +1220,7 @@ button:disabled{cursor:not-allowed}
 })();
 </script>
 
-<!-- BONUS INSCRIPTION : chaque nouveau compte reçoit 1 000 FC, crédités une seule fois lors de la création du compte. -->
+<!-- BONUS BIENVENUE : chaque nouveau compte reçoit un produit bonus de 1 000 FC à réclamer une seule fois depuis Activités. -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
@@ -1221,6 +1327,10 @@ button:disabled{cursor:not-allowed}
    u.transactions = Array.isArray(u.transactions) ? u.transactions : [];
    u.purchasedPlans = Array.isArray(u.purchasedPlans) ? u.purchasedPlans : [];
    u.activeInvestments = Array.isArray(u.activeInvestments) ? u.activeInvestments : [];
+   if(!u.welcomeBonus || typeof u.welcomeBonus !== 'object') u.welcomeBonus = { amount: 1000, available: false, claimed: false };
+   u.welcomeBonus.amount = Number(u.welcomeBonus.amount) || 1000;
+   u.welcomeBonus.available = u.welcomeBonus.available === true;
+   u.welcomeBonus.claimed = u.welcomeBonus.claimed === true;
    u.teamN1 = Array.isArray(u.teamN1) ? u.teamN1 : [];
    u.teamN2 = Array.isArray(u.teamN2) ? u.teamN2 : [];
    u.teamN3 = Array.isArray(u.teamN3) ? u.teamN3 : [];
@@ -1423,14 +1533,11 @@ button:disabled{cursor:not-allowed}
     const phone = document.getElementById('regPhone').value.trim();
     const pass = document.getElementById('regPass').value;
     const passConfirm = document.getElementById('regPassConfirm').value;
-    const secretQuestion = document.getElementById('regSecretQuestion').value;
-    const secretAnswer = document.getElementById('regSecretAnswer').value.trim();
     const refCode = document.getElementById('regRef').value.trim();
 
     if(!phone || phone.length < 9) { hideGlobalProcessing(); alert('Veuillez entrer un numéro de téléphone valide.'); return; }
     if(!pass || pass.length < 6) { hideGlobalProcessing(); alert('Le mot de passe doit comporter au moins 6 caractères.'); return; }
     if(pass !== passConfirm) { hideGlobalProcessing(); alert('Les mots de passe ne correspondent pas.'); return; }
-    if(!secretAnswer) { hideGlobalProcessing(); alert('Veuillez renseigner votre réponse secrète.'); return; }
 
     if(refCode && refCode === phone) {
       hideGlobalProcessing();
@@ -1477,16 +1584,12 @@ button:disabled{cursor:not-allowed}
         phone: phone, 
         name: 'Membre ' + phone,
         password: pass,
-        secretQuestion: secretQuestion,
-        secretAnswer: secretAnswer,
-        balance: 1000, 
+        secretQuestion: '',
+        secretAnswer: '',
+        balance: 0, 
         invested: 0, 
-        transactions: [{
-          type: 'Bonus de bienvenue',
-          amount: 1000,
-          date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-          status: 'Approuvé'
-        }], 
+        welcomeBonus: { amount: 1000, available: true, claimed: false },
+        transactions: [], 
         purchasedPlans: [], 
         activeInvestments: [],
         productCatalogVersion: FINOVA_PRODUCT_CATALOG_VERSION, 
@@ -1585,14 +1688,10 @@ button:disabled{cursor:not-allowed}
           password: pass,
           secretQuestion: '',
           secretAnswer: '',
-          balance: 500, 
+          balance: 0, 
           invested: 0, 
-          transactions: [{
-            type: 'Bonus de bienvenue',
-            amount: 500,
-            date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-            status: 'Approuvé'
-          }], 
+          welcomeBonus: { amount: 1000, available: false, claimed: false },
+          transactions: [], 
           purchasedPlans: [], 
           activeInvestments: [], 
           teamN1: [], 
@@ -1632,6 +1731,10 @@ button:disabled{cursor:not-allowed}
       }
 
       let target = userSnap.data();
+      if(!target.secretQuestion || !target.secretAnswer){
+        alert('Ce compte n’a pas encore été sécurisé. Connectez-vous puis ouvrez Profil → « Sécuriser mon compte » pour configurer la récupération du mot de passe.');
+        return;
+      }
       currentForgotPhone = phone;
       document.getElementById('forgotDisplayQuestion').value = target.secretQuestion || 'Quel est le nom de votre première école ?';
       document.getElementById('forgotStep1').classList.add('hidden');
@@ -1816,6 +1919,15 @@ button:disabled{cursor:not-allowed}
    let rechargesHtml = '';
    let withdrawalsHtml = '';
    let investmentsHtml = '';
+
+   const bonusBox = document.getElementById('welcomeBonusActivity');
+   if(bonusBox){
+     if(u.welcomeBonus && u.welcomeBonus.available === true && u.welcomeBonus.claimed !== true){
+       bonusBox.innerHTML = `<div class="welcome-bonus-product"><div class="welcome-bonus-head"><div class="welcome-bonus-icon"><i class="fa-solid fa-gift"></i></div><div><h3>🎁 Bonus de bienvenue</h3><p>Votre produit bonus est actif. Appuyez sur « Réclamer » pour recevoir <b>1 000 FC</b> sur votre solde.</p></div></div><button class="claim-bonus-btn" onclick="claimWelcomeBonus(this)"><i class="fa-solid fa-hand-holding-dollar"></i> Réclamer 1 000 FC</button></div>`;
+     } else {
+       bonusBox.innerHTML = '';
+     }
+   }
 
    u.transactions.forEach(tx => {
     let statusBadge = '';
@@ -2009,6 +2121,40 @@ u.transactions.unshift({
    document.getElementById('dashboard').classList.remove('active');
    showScreen('loginScreen');
   }
+
+  window.claimWelcomeBonus = async function(btn){
+   let u = getUserData();
+   if(!u.phone){ alert('Votre session utilisateur est introuvable.'); return; }
+   if(!u.welcomeBonus || u.welcomeBonus.available !== true || u.welcomeBonus.claimed === true){
+     alert('Ce bonus a déjà été réclamé ou n’est plus disponible.');
+     updateDashboardUI();
+     return;
+   }
+
+   showGlobalProcessing('Réclamation du bonus...');
+   btn.disabled = true;
+   try{
+     const amount = 1000;
+     u.balance += amount;
+     u.welcomeBonus.claimed = true;
+     u.welcomeBonus.available = false;
+     u.transactions.unshift({
+       type: 'Bonus de bienvenue',
+       amount: amount,
+       date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+       status: 'Réussi avec succès'
+     });
+     await saveUserData(u);
+     updateDashboardUI();
+     hideGlobalProcessing();
+     alert('🎉 Bonus réclamé avec succès ! 1 000 FC ont été ajoutés à votre solde.');
+   }catch(e){
+     console.error(e);
+     hideGlobalProcessing();
+     btn.disabled = false;
+     alert('Impossible de réclamer le bonus. Veuillez réessayer.');
+   }
+  };
 
   function checkDailyEarnings(){
    let u = getUserData();
